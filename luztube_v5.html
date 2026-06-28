@@ -1553,12 +1553,17 @@ function YoutubePlayer({ videoId, title }) {
       onMouseLeave={() => setShowUI(false)}>
       <div ref={containerRef} style={{width:'100%',height:'100%',pointerEvents:'none'}} />
       {showUI && ready && <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,0.85))',padding:'6px 10px',zIndex:20,userSelect:'none'}}>
-        <div ref={progressRef} onClick={e => { if (p) { const r = progressRef.current.getBoundingClientRect(); p.seekTo(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)) * d, true); } }} style={{width:'100%',height:4,background:'rgba(255,255,255,0.2)',borderRadius:2,marginBottom:6,cursor:'pointer'}}>
-          <div style={{width:`${d ? (t/d)*100 : 0}%`,height:'100%',background:'var(--dt-primary)',borderRadius:2}} />
+        <div ref={progressRef} onClick={e => { if (p) { const r = progressRef.current.getBoundingClientRect(); p.seekTo(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)) * d, true); } }} style={{width:'100%',height:6,background:'rgba(255,255,255,0.15)',borderRadius:3,marginBottom:5,cursor:'pointer',position:'relative',transition:'height 0.15s'}}
+          onMouseEnter={e=>e.currentTarget.style.height='8px'} onMouseLeave={e=>e.currentTarget.style.height='6px'}>
+          <div style={{width:`${d ? (t/d)*100 : 0}%`,height:'100%',background:'var(--dt-primary)',borderRadius:3,position:'relative',transition:'width 0.1s'}}>
+            <div style={{position:'absolute',right:-5,top:'50%',transform:'translateY(-50%)',width:10,height:10,borderRadius:'50%',background:'var(--dt-primary)',boxShadow:'0 0 4px rgba(0,0,0,0.5)'}} />
+          </div>
         </div>
-        <div style={{display:'flex',alignItems:'center',gap:8}}>
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) playing ? p.pauseVideo() : p.playVideo();}} style={{background:'none',border:'none',color:'#fff',fontSize:18,cursor:'pointer',padding:0,width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center'}}>{playing ? '⏸' : '▶'}</button>
-          <span style={{fontSize:11,color:'rgba(255,255,255,0.7)',fontVariantNumeric:'tabular-nums',whiteSpace:'nowrap',minWidth:70}}>{fmt(t)} / {fmt(d)}</span>
+        <div style={{display:'flex',alignItems:'center',gap:6}}>
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) playing ? p.pauseVideo() : p.playVideo();}} style={{background:'none',border:'none',color:'#fff',fontSize:20,cursor:'pointer',padding:0,width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center'}}>{playing ? '⏸' : '▶'}</button>
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) p.seekTo(Math.max(0, t - 10), true);}} style={{background:'none',border:'none',color:'rgba(255,255,255,0.8)',fontSize:14,cursor:'pointer',padding:0,width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',opacity:0.7}} title="-10s">⏪</button>
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) p.seekTo(Math.min(d, t + 10), true);}} style={{background:'none',border:'none',color:'rgba(255,255,255,0.8)',fontSize:14,cursor:'pointer',padding:0,width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',opacity:0.7}} title="+10s">⏩</button>
+          <span style={{fontSize:11,color:'rgba(255,255,255,0.7)',fontVariantNumeric:'tabular-nums',whiteSpace:'nowrap',minWidth:72}}>{fmt(t)} / {fmt(d)}</span>
           <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) muted ? (p.unMute(), setMuted(false)) : (p.mute(), setMuted(true));}} style={{background:'none',border:'none',color:'#fff',fontSize:13,cursor:'pointer',padding:0}}>
             {muted||vol===0 ? '🔇' : vol < 50 ? '🔉' : '🔊'}
           </button>
