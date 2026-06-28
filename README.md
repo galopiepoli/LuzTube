@@ -37,6 +37,10 @@ Bash
 
 
 sh START_LuzTube.sh
+
+guia de acceso (Windows)
+Abrir el START_LuzTube.bat como administrador
+
 Acceso:
 Una vez el servidor esté activo (puerto 8080), abre tu navegador en: http://localhost:8080
 💡 Notas Importantes
