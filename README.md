@@ -116,6 +116,7 @@ Para que las búsquedas y canales funcionen, necesitás una clave de **YouTube D
 ## Panel Admin
 
 La contraseña por defecto es `Shokeados`. Se recomienda cambiarla en la pestana **Configuración** del panel.
+por defecto hay canales pre-configurados, te recomiendo crear tu propia lista adaptada a tus necesidades
 
 ---
 
