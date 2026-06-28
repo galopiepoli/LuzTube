@@ -1,0 +1,3765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<title>LuzTube</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E50914'/><polygon points='35,25 35,75 75,50' fill='white'/></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  if(window.location.protocol==='file:'){
+    document.addEventListener('DOMContentLoaded',function(){
+      var b=document.createElement('div');
+      b.innerHTML='<strong>⚠ Modo archivo local:</strong> Para reproducir videos, ejecutá <code style="background:rgba(0,0,0,0.3);padding:2px 8px;border-radius:4px;font-size:12px">bash START_LuzTube.sh</code> en Terminal → abrí <strong>http://localhost:8080</strong>';
+      b.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#B45309;color:white;padding:10px 20px;font-size:13px;text-align:center;line-height:1.6';
+      document.body.appendChild(b);
+    });
+  }
+})();
+</script>
+<style>
+/* ============================================================
+   LUZTUBE v5 — GLOBAL STYLES
+   ============================================================ */
+:root {
+  --dt-primary: #E50914;
+  --dt-primary-dark: #B20710;
+  --dt-primary-glow: rgba(229,9,20,0.4);
+  --dt-secondary: #FF6B35;
+  --dt-accent: #FFD700;
+  --dt-bg: #0A0A0A;
+  --dt-bg2: #141414;
+  --dt-bg3: #1F1F1F;
+  --dt-bg4: #2A2A2A;
+  --dt-surface: #1A1A1A;
+  --dt-surface2: #242424;
+  --dt-border: rgba(255,255,255,0.08);
+  --dt-border2: rgba(255,255,255,0.15);
+  --dt-text: #FFFFFF;
+  --dt-text2: #B3B3B3;
+  --dt-text3: #737373;
+  --dt-success: #46D369;
+  --dt-warning: #FB923C;
+  --dt-info: #3B82F6;
+  --dt-card-radius: 10px;
+  --dt-font: 'DM Sans', sans-serif;
+  --dt-font-display: 'Bebas Neue', sans-serif;
+  --dt-sidebar-w: 240px;
+  --dt-transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  --dt-thumb-size: 200px;
+  --dt-zoom: 1;
+  --dt-blur-intensity: 0px;
+  --dt-glow: none;
+  --dt-card-shadow: none;
+  --dt-bg-image: none;
+  --dt-sidebar-bg: var(--dt-bg2);
+}
+
+/* ───────────── THEMES ───────────── */
+.theme-light {
+  --dt-bg:#F5F5F5; --dt-bg2:#FFFFFF; --dt-bg3:#EBEBEB; --dt-bg4:#E0E0E0;
+  --dt-surface:#FFFFFF; --dt-surface2:#F0F0F0;
+  --dt-border:rgba(0,0,0,0.08); --dt-border2:rgba(0,0,0,0.15);
+  --dt-text:#0F0F0F; --dt-text2:#606060; --dt-text3:#909090;
+  --dt-sidebar-bg:#FFFFFF;
+}
+.theme-oled {
+  --dt-bg:#000000; --dt-bg2:#050505; --dt-bg3:#101010; --dt-bg4:#1A1A1A;
+  --dt-surface:#0A0A0A; --dt-surface2:#111;
+  --dt-sidebar-bg:#050505;
+}
+.theme-netflix {
+  --dt-primary:#E50914; --dt-bg:#0A0A0A; --dt-bg2:#141414;
+  --dt-bg3:#1F1F1F; --dt-surface:#1A1A1A; --dt-sidebar-bg:#141414;
+}
+.theme-synthwave {
+  --dt-primary:#FF2D78; --dt-secondary:#7B2FFF; --dt-accent:#00F5FF;
+  --dt-bg:#0D0221; --dt-bg2:#150333; --dt-bg3:#1F0A40; --dt-bg4:#2A1060;
+  --dt-surface:#1A0530; --dt-text:#FFFFFF; --dt-text2:#C8A8FF;
+  --dt-sidebar-bg:#150333;
+}
+.theme-vaporwave {
+  --dt-primary:#FF6EC7; --dt-secondary:#5CFFD8; --dt-accent:#B45AFF;
+  --dt-bg:#1A0A2E; --dt-bg2:#241240; --dt-bg3:#301850; --dt-bg4:#3D2060;
+  --dt-surface:#2A1540; --dt-text:#FFD6F5; --dt-text2:#E0A0FF;
+  --dt-sidebar-bg:#241240;
+}
+.theme-minimal {
+  --dt-primary:#333333; --dt-bg:#FAFAFA; --dt-bg2:#F0F0F0; --dt-bg3:#E8E8E8;
+  --dt-bg4:#DEDEDE; --dt-surface:#FFFFFF; --dt-text:#111111;
+  --dt-text2:#555; --dt-text3:#999; --dt-border:rgba(0,0,0,0.06);
+  --dt-border2:rgba(0,0,0,0.12); --dt-sidebar-bg:#F0F0F0;
+}
+.theme-glassmorphism {
+  --dt-bg:rgba(10,10,30,0.95); --dt-bg2:rgba(255,255,255,0.05);
+  --dt-bg3:rgba(255,255,255,0.08); --dt-bg4:rgba(255,255,255,0.12);
+  --dt-surface:rgba(255,255,255,0.07); --dt-border:rgba(255,255,255,0.12);
+  --dt-border2:rgba(255,255,255,0.22); --dt-blur-intensity:16px;
+  --dt-sidebar-bg:rgba(255,255,255,0.05);
+}
+.theme-retro {
+  --dt-primary:#FF7F00; --dt-secondary:#00C896; --dt-accent:#FFE000;
+  --dt-bg:#1A0A00; --dt-bg2:#2A1500; --dt-bg3:#3A2000; --dt-bg4:#4A2D00;
+  --dt-surface:#2A1500; --dt-font:'Courier New',monospace;
+  --dt-sidebar-bg:#2A1500;
+}
+.theme-cyberpunk {
+  --dt-primary:#FFE600; --dt-secondary:#FF2079; --dt-accent:#00FFDD;
+  --dt-bg:#0A0010; --dt-bg2:#100018; --dt-bg3:#1A0028; --dt-bg4:#220035;
+  --dt-surface:#140020; --dt-text:#FFFFFF; --dt-text2:#E0CCFF;
+  --dt-sidebar-bg:#100018;
+}
+.theme-kids {
+  --dt-primary:#FF4081; --dt-secondary:#00BCD4; --dt-accent:#FFEB3B;
+  --dt-bg:#FFF9F0; --dt-bg2:#FFFFFF; --dt-bg3:#FFF0E6; --dt-bg4:#FFE4CC;
+  --dt-surface:#FFFFFF; --dt-text:#2D2D2D; --dt-text2:#666;
+  --dt-card-radius:20px; --dt-font:'Nunito',sans-serif;
+  --dt-sidebar-bg:#FFFFFF;
+}
+
+/* ───────────── GLOW EFFECTS ───────────── */
+.effects-glow .dt-nav-item.active { box-shadow: 0 0 12px var(--dt-primary-glow); }
+.effects-glow .btn-primary { box-shadow: 0 0 16px var(--dt-primary-glow); }
+.effects-glow .vid-card:hover .vid-thumb { box-shadow: 0 0 24px var(--dt-primary-glow); }
+
+/* ───────────── SHADOW EFFECTS ───────────── */
+.effects-shadows .dt-card, .effects-shadows .vid-card { box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+.effects-shadows .dt-modal { box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
+
+/* ───────────── ANIMATIONS TOGGLE ───────────── */
+.no-animations *, .no-animations *::before, .no-animations *::after {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
+
+/* ───────────── KIDS MODE ───────────── */
+.kids-mode .dt-nav-item { font-size: 16px; padding: 14px 16px; }
+.kids-mode .vid-card { border-radius: 20px; }
+.kids-mode .btn { font-size: 16px; padding: 12px 24px; border-radius: 16px; }
+.kids-mode .dt-topbar { min-height: 72px; }
+.kids-mode .admin-section, .kids-mode .api-section { display: none; }
+
+/* ═══ BASE ═══ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--dt-font);
+  background: var(--dt-bg);
+  color: var(--dt-text);
+  overflow-x: hidden;
+  min-height: 100vh;
+  zoom: var(--dt-zoom);
+  background-image: var(--dt-bg-image);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+input,select,textarea,button { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--dt-bg2); }
+::-webkit-scrollbar-thumb { background: var(--dt-bg4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dt-text3); }
+
+/* ═══ SIDEBAR ═══ */
+.dt-sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--dt-sidebar-w);
+  background: var(--dt-sidebar-bg);
+  backdrop-filter: blur(var(--dt-blur-intensity));
+  border-right: 1px solid var(--dt-border);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform var(--dt-transition), width var(--dt-transition);
+  overflow-y: auto; overflow-x: hidden;
+}
+.dt-sidebar.collapsed { width: 68px; }
+.dt-sidebar.mobile-open { transform: translateX(0) !important; }
+.dt-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--dt-border);
+  min-height: 64px; overflow: hidden;
+}
+.dt-logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--dt-primary);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 18px; color: white;
+}
+.dt-logo-text {
+  font-family: var(--dt-font-display);
+  font-size: 28px; letter-spacing: 1px;
+  color: var(--dt-primary); white-space: nowrap;
+}
+.dt-nav { flex: 1; padding: 12px 8px; }
+.dt-nav-section { margin-bottom: 24px; }
+.dt-nav-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--dt-text3);
+  padding: 0 8px; margin-bottom: 6px; white-space: nowrap; overflow: hidden;
+}
+.dt-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 8px;
+  cursor: pointer; transition: background var(--dt-transition);
+  color: var(--dt-text2); font-size: 14px; font-weight: 400;
+  white-space: nowrap; overflow: hidden; position: relative;
+}
+.dt-nav-item:hover { background: var(--dt-bg3); color: var(--dt-text); }
+.dt-nav-item.active { background: rgba(229,9,20,0.15); color: var(--dt-primary); font-weight: 500; }
+.dt-nav-icon { font-size: 20px; flex-shrink: 0; width: 22px; text-align: center; }
+.dt-nav-badge {
+  margin-left: auto; background: var(--dt-primary);
+  color: white; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 999px;
+}
+
+/* ═══ TOPBAR ═══ */
+.dt-topbar {
+  position: fixed; top: 0; right: 0;
+  left: var(--dt-sidebar-w); height: 64px;
+  background: var(--dt-sidebar-bg);
+  backdrop-filter: blur(var(--dt-blur-intensity));
+  border-bottom: 1px solid var(--dt-border);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px; z-index: 90;
+  transition: left var(--dt-transition);
+}
+.dt-topbar.sidebar-collapsed { left: 68px; }
+.dt-search-wrap { flex: 1; max-width: 520px; display: flex; align-items: center; }
+.dt-search-input {
+  flex: 1; height: 40px;
+  background: var(--dt-bg3); border: 1px solid var(--dt-border2);
+  border-right: none; border-radius: 20px 0 0 20px;
+  padding: 0 16px; color: var(--dt-text); font-size: 14px; outline: none;
+  transition: border-color var(--dt-transition);
+}
+.dt-search-input:focus { border-color: var(--dt-primary); }
+.dt-search-btn {
+  height: 40px; width: 56px; background: var(--dt-bg4);
+  border: 1px solid var(--dt-border2);
+  border-radius: 0 20px 20px 0;
+  cursor: pointer; color: var(--dt-text); font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--dt-transition);
+}
+.dt-search-btn:hover { background: var(--dt-primary); }
+.dt-topbar-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.dt-icon-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; border: none;
+  cursor: pointer; color: var(--dt-text2); font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--dt-transition), color var(--dt-transition);
+  position: relative;
+}
+.dt-icon-btn:hover { background: var(--dt-bg3); color: var(--dt-text); }
+
+/* ═══ MAIN ═══ */
+.dt-main {
+  margin-left: var(--dt-sidebar-w);
+  padding-top: 64px; min-height: 100vh;
+  transition: margin-left var(--dt-transition);
+}
+.dt-main.sidebar-collapsed { margin-left: 68px; }
+.dt-page { padding: 28px 24px; max-width: 1600px; }
+
+/* ═══ BUTTONS ═══ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  border: none; transition: all var(--dt-transition); white-space: nowrap;
+}
+.btn-primary { background: var(--dt-primary); color: white; }
+.btn-primary:hover { background: var(--dt-primary-dark); transform: translateY(-1px); }
+.btn-secondary { background: var(--dt-bg3); color: var(--dt-text); border: 1px solid var(--dt-border2); }
+.btn-secondary:hover { background: var(--dt-bg4); }
+.btn-ghost { background: transparent; color: var(--dt-text2); }
+.btn-ghost:hover { background: var(--dt-bg3); color: var(--dt-text); }
+.btn-danger { background: transparent; color: #EF4444; border: 1px solid rgba(239,68,68,0.3); }
+.btn-danger:hover { background: rgba(239,68,68,0.1); }
+.btn-success { background: rgba(70,211,105,0.15); color: var(--dt-success); border: 1px solid rgba(70,211,105,0.3); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+.btn-icon { padding: 8px; border-radius: 8px; }
+
+/* ═══ CARDS ═══ */
+.dt-card {
+  background: var(--dt-surface);
+  backdrop-filter: blur(var(--dt-blur-intensity));
+  border: 1px solid var(--dt-border);
+  border-radius: var(--dt-card-radius); overflow: hidden;
+}
+.dt-card-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--dt-border);
+  display: flex; align-items: center; gap: 12px;
+}
+.dt-card-title { font-size: 16px; font-weight: 600; flex: 1; }
+.dt-card-body { padding: 20px; }
+
+/* ═══ VIDEO GRID ═══ */
+.vid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--dt-thumb-size), 1fr));
+  gap: 20px;
+}
+.layout-list .vid-grid { grid-template-columns: 1fr; }
+.layout-list .vid-card { display: flex; gap: 16px; }
+.layout-list .vid-thumb { width: 200px; flex-shrink: 0; margin-bottom: 0; aspect-ratio: 16/9; }
+.layout-compact .vid-grid { gap: 10px; }
+.layout-cinematic { --dt-thumb-size: 320px; }
+.layout-cinematic .vid-grid { grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 24px; }
+
+.vid-card { cursor: pointer; transition: transform var(--dt-transition); }
+.vid-card:hover { transform: translateY(-3px); }
+.vid-card:hover .vid-thumb-inner { transform: scale(1.04); }
+.vid-thumb {
+  aspect-ratio: 16/9; border-radius: 8px;
+  overflow: hidden; background: var(--dt-bg3);
+  position: relative; margin-bottom: 10px;
+}
+.vid-thumb-inner {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.vid-duration {
+  position: absolute; bottom: 6px; right: 6px;
+  background: rgba(0,0,0,0.85); color: white;
+  font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px;
+}
+.vid-info { padding: 0 2px; }
+.vid-title {
+  font-size: 14px; font-weight: 500; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+  color: var(--dt-text); margin-bottom: 5px;
+}
+.vid-meta { font-size: 12px; color: var(--dt-text3); }
+.vid-channel { color: var(--dt-text2); font-size: 12px; font-weight: 500; margin-bottom: 2px; }
+
+/* ═══ SKELETON ═══ */
+@keyframes shimmer { 0%{background-position:-1000px 0} 100%{background-position:1000px 0} }
+.skeleton {
+  background: linear-gradient(90deg,var(--dt-bg3) 25%,var(--dt-bg4) 50%,var(--dt-bg3) 75%);
+  background-size: 2000px 100%; animation: shimmer 1.8s infinite linear; border-radius: 6px;
+}
+
+/* ═══ MODAL ═══ */
+.dt-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity:0; } }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes slideUp { from { transform:translateY(20px); opacity:0; } }
+@keyframes slideInRight { from { transform:translateX(100%); opacity:0; } }
+.dt-modal {
+  background: var(--dt-bg2);
+  backdrop-filter: blur(var(--dt-blur-intensity));
+  border: 1px solid var(--dt-border2);
+  border-radius: 14px; max-width: 680px; width: 100%;
+  max-height: 90vh; overflow-y: auto; animation: slideUp 0.2s ease;
+}
+.dt-modal-header {
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--dt-border);
+  display: flex; align-items: center; gap: 12px;
+}
+.dt-modal-title { font-size: 18px; font-weight: 600; flex: 1; }
+.dt-modal-body { padding: 24px; }
+.dt-modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--dt-border);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* ═══ FORMS ═══ */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 13px; font-weight: 500; color: var(--dt-text2); margin-bottom: 6px; }
+.form-control {
+  width: 100%; padding: 10px 14px;
+  background: var(--dt-bg3); border: 1px solid var(--dt-border2);
+  border-radius: 8px; color: var(--dt-text); font-size: 14px;
+  outline: none; transition: border-color var(--dt-transition);
+}
+.form-control:focus { border-color: var(--dt-primary); }
+.form-select {
+  width: 100%; padding: 10px 14px;
+  background: var(--dt-bg3); border: 1px solid var(--dt-border2);
+  border-radius: 8px; color: var(--dt-text); font-size: 14px;
+  outline: none; cursor: pointer; transition: border-color var(--dt-transition);
+}
+.form-range { width: 100%; accent-color: var(--dt-primary); }
+.pw-wrap { position: relative; }
+.pw-wrap .form-control { padding-right: 44px; }
+.pw-toggle {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: var(--dt-text3); font-size: 16px;
+}
+
+/* ═══ BADGES ═══ */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+}
+.badge-red { background: rgba(229,9,20,0.2); color: #FF6B6B; }
+.badge-green { background: rgba(70,211,105,0.2); color: var(--dt-success); }
+.badge-blue { background: rgba(59,130,246,0.2); color: var(--dt-info); }
+.badge-yellow { background: rgba(255,215,0,0.2); color: var(--dt-accent); }
+.badge-gray { background: var(--dt-bg3); color: var(--dt-text2); }
+
+/* ═══ TABS ═══ */
+.dt-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--dt-border); margin-bottom: 24px; flex-wrap: wrap; }
+.dt-tab {
+  padding: 10px 18px; font-size: 14px; font-weight: 500;
+  cursor: pointer; color: var(--dt-text3);
+  border-bottom: 2px solid transparent; transition: all var(--dt-transition);
+}
+.dt-tab:hover { color: var(--dt-text); }
+.dt-tab.active { color: var(--dt-primary); border-bottom-color: var(--dt-primary); }
+
+/* ═══ STATS ═══ */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 14px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--dt-surface); border: 1px solid var(--dt-border);
+  border-radius: var(--dt-card-radius); padding: 18px 16px;
+}
+.stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--dt-text3); margin-bottom: 8px; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--dt-text); }
+.stat-sub { font-size: 11px; color: var(--dt-text3); margin-top: 4px; }
+
+/* ═══ PLAYER ═══ */
+.player-wrap {
+  background: #000; border-radius: 12px; overflow: hidden; position: relative;
+}
+.player-wrap iframe, .player-wrap video { width: 100%; aspect-ratio: 16/9; display: block; border: none; }
+
+/* ═══ HERO ═══ */
+.hero-banner {
+  border-radius: 14px; overflow: hidden; position: relative;
+  margin-bottom: 32px; background: linear-gradient(135deg,var(--dt-bg3) 0%,var(--dt-bg2) 100%);
+  min-height: 220px; display: flex; align-items: flex-end;
+}
+.hero-bg { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; opacity: 0.4; }
+.hero-gradient { position: absolute; inset: 0; background: linear-gradient(to right,rgba(0,0,0,0.95) 30%,rgba(0,0,0,0.3) 100%); }
+.hero-content { position: relative; z-index: 1; padding: 28px 32px; }
+.hero-category { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--dt-primary); margin-bottom: 8px; }
+.hero-title { font-family: var(--dt-font-display); font-size: 36px; letter-spacing: 1px; line-height: 1.1; margin-bottom: 8px; }
+.hero-meta { font-size: 13px; color: var(--dt-text2); margin-bottom: 16px; }
+
+/* ═══ SECTION HEADER ═══ */
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.section-title { font-family: var(--dt-font-display); font-size: 22px; letter-spacing: 0.5px; flex: 1; }
+.section-dot { width: 4px; height: 22px; background: var(--dt-primary); border-radius: 2px; }
+
+/* ═══ CHANNEL CARD ═══ */
+.ch-card {
+  background: var(--dt-surface); border: 1px solid var(--dt-border);
+  border-radius: var(--dt-card-radius); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; transition: border-color var(--dt-transition);
+}
+.ch-card:hover { border-color: var(--dt-border2); }
+.ch-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--dt-bg3); display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px; flex-shrink: 0; overflow: hidden;
+}
+.ch-info { flex: 1; min-width: 0; }
+.ch-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.score-bar { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.score-track { flex: 1; height: 4px; background: var(--dt-bg4); border-radius: 2px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--dt-primary); border-radius: 2px; transition: width 0.4s ease; }
+.score-val { font-size: 11px; font-weight: 700; color: var(--dt-primary); min-width: 20px; text-align: right; }
+
+/* ═══ ADMIN TABLE ═══ */
+.dt-table { width: 100%; border-collapse: collapse; }
+.dt-table th, .dt-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--dt-border); font-size: 13px; }
+.dt-table th { color: var(--dt-text3); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; background: var(--dt-bg2); }
+.dt-table tr:hover td { background: var(--dt-bg3); }
+.dt-table tr:last-child td { border-bottom: none; }
+
+/* ═══ TOGGLE ═══ */
+.dt-toggle { position: relative; display: inline-flex; align-items: center; cursor: pointer; user-select: none; }
+.dt-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.dt-toggle-track { width: 42px; height: 24px; border-radius: 12px; background: var(--dt-bg4); transition: background var(--dt-transition); position: relative; }
+.dt-toggle input:checked + .dt-toggle-track { background: var(--dt-primary); }
+.dt-toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform var(--dt-transition); }
+.dt-toggle input:checked ~ .dt-toggle-track .dt-toggle-thumb { transform: translateX(18px); }
+
+/* ═══ LOGIN ═══ */
+.login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--dt-bg); padding: 20px;
+}
+.login-card {
+  background: var(--dt-bg2); border: 1px solid var(--dt-border2);
+  border-radius: 16px; padding: 40px 36px; width: 100%; max-width: 400px; text-align: center;
+}
+.lockout-bar {
+  background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.3);
+  border-radius: 8px; padding: 12px 16px; margin-bottom: 16px;
+  font-size: 13px; color: var(--dt-warning); text-align: center;
+}
+
+/* ═══ TOAST ═══ */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: var(--dt-bg2); border: 1px solid var(--dt-border2);
+  border-radius: 10px; padding: 12px 18px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; min-width: 260px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  animation: slideInRight 0.3s ease; cursor: pointer;
+}
+.toast-success { border-left: 3px solid var(--dt-success); }
+.toast-error { border-left: 3px solid var(--dt-primary); }
+.toast-info { border-left: 3px solid var(--dt-info); }
+
+/* ═══ EMPTY STATE ═══ */
+.empty-state { text-align: center; padding: 64px 20px; color: var(--dt-text3); }
+.empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.4; }
+.empty-title { font-size: 18px; font-weight: 600; color: var(--dt-text2); margin-bottom: 8px; }
+.empty-sub { font-size: 14px; }
+
+/* ═══ MISC ═══ */
+.color-row { display: flex; align-items: center; gap: 10px; }
+.divider { border: none; border-top: 1px solid var(--dt-border); margin: 20px 0; }
+.pill-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.pill-tab {
+  padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 500;
+  background: var(--dt-bg3); color: var(--dt-text2); cursor: pointer;
+  border: 1px solid var(--dt-border); transition: all var(--dt-transition);
+}
+.pill-tab:hover { border-color: var(--dt-border2); color: var(--dt-text); }
+.pill-tab.active { background: var(--dt-primary); color: white; border-color: var(--dt-primary); }
+.pulse { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.5} }
+.fade-enter { animation: fadeIn 0.3s ease; }
+.text-muted { color: var(--dt-text2); }
+.text-dim { color: var(--dt-text3); }
+.w-full { width: 100%; }
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+
+/* ═══ API STATUS DOT ═══ */
+.api-dot {
+  width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+  margin-right: 6px; flex-shrink: 0;
+}
+.api-dot-ok { background: var(--dt-success); box-shadow: 0 0 6px var(--dt-success); }
+.api-dot-bad { background: #EF4444; box-shadow: 0 0 6px #EF4444; }
+.api-dot-unknown { background: var(--dt-text3); }
+
+/* ═══ PROFILE CARDS ═══ */
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; }
+.profile-card {
+  background: var(--dt-surface); border: 2px solid var(--dt-border);
+  border-radius: 12px; padding: 16px 12px; text-align: center;
+  cursor: pointer; transition: all var(--dt-transition);
+}
+.profile-card:hover { border-color: var(--dt-primary); transform: translateY(-2px); }
+.profile-card.active { border-color: var(--dt-primary); background: rgba(229,9,20,0.1); }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 768px) {
+  .dt-sidebar { transform: translateX(-100%); }
+  .dt-topbar { left: 0 !important; }
+  .dt-main { margin-left: 0 !important; }
+  .dt-page { padding: 16px 14px; }
+  .vid-grid { grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 12px; }
+  .hero-title { font-size: 24px; }
+  .stats-grid { grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); }
+}
+@media (max-width: 480px) {
+  .dt-topbar-actions .dt-icon-btn:not(:last-child):not(:nth-last-child(2)) { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useContext, createContext, useCallback, useRef, useMemo } = React;
+
+// ═══════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════
+const YOUTUBE_API_KEY_PLACEHOLDER = "TU_API_KEY_DE_YOUTUBE_AQUI";
+const DEFAULT_ADMIN_PASSWORD = "Shokeados";
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_SECONDS = 30;
+
+// ═══════════════════════════════════════════════
+// DEFAULT CONFIG
+// ═══════════════════════════════════════════════
+const DEFAULT_CONFIG = {
+  appName: "LuzTube",
+  logoEmoji: "▶",
+  theme: "dark",
+  primaryColor: "#E50914",
+  secondaryColor: "#FF6B35",
+  accentColor: "#FFD700",
+  bgColor: "#0A0A0A",
+  bgColor2: "#141414",
+  cardColor: "#1A1A1A",
+  sidebarColor: "#141414",
+  textColor: "#FFFFFF",
+  thumbSize: "200",
+  feedLayout: "grid",
+  borderRadius: "10",
+  compactMode: false,
+  fontFamily: "DM Sans",
+  fontSize: "14",
+  letterSpacing: "0",
+  visualStyle: "netflix",
+  shortsEnabled: true,
+  autoplay: false,
+  nextAutoplay: true,
+  animationsEnabled: true,
+  glowEffects: false,
+  shadowEffects: true,
+  roundedUI: false,
+  kidsMode: false,
+  backgroundImage: "",
+  backgroundBlur: "0",
+  gradientBg: false,
+  zoomUI: "1",
+};
+
+const DEFAULT_WHITELIST = [
+  // ── Los 3 Pilares ──────────────────────────────────────────────────────────
+  { id:"", handle:"@JuegaGerman",          name:"JuegaGerman",             category:"Gaming",           score:8, priority:1, enabled:true, shorts:false, description:"Los 3 pilares del internet", thumbnail:"" },
+  { id:"", handle:"@HolaSoyGerman",        name:"HolaSoyGerman",           category:"Entretenimiento",  score:8, priority:1, enabled:true, shorts:false, description:"Los 3 pilares del internet", thumbnail:"" },
+  { id:"", handle:"@HelldogMadness",       name:"Helldog",                 category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Los 3 pilares del internet", thumbnail:"" },
+  { id:"", handle:"@itowngameplay",        name:"iTownGamePlay",           category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Terror y diversión", thumbnail:"" },
+  // ── Tecnología ────────────────────────────────────────────────────────────
+  { id:"", handle:"@giocodeTecnologia",    name:"GioCode",                 category:"Tecnología",       score:7, priority:2, enabled:true, shorts:false, description:"Tecnología y programación", thumbnail:"" },
+  { id:"", handle:"@LocosporLinux",        name:"Locos por Linux",         category:"Tecnología",       score:7, priority:2, enabled:true, shorts:false, description:"Linux y software libre", thumbnail:"" },
+  { id:"", handle:"@LareddeMario",         name:"La red de Mario",         category:"Tecnología",       score:8, priority:1, enabled:true, shorts:false, description:"Tecnología en español", thumbnail:"" },
+  { id:"", handle:"@SupraPixel",           name:"SupraPixel",              category:"Tecnología",       score:6, priority:3, enabled:true, shorts:false, description:"Tecnología y gadgets", thumbnail:"" },
+  { id:"", handle:"@LareddeMarioDirectos", name:"La red de Mario Directos",category:"Tecnología",       score:7, priority:2, enabled:true, shorts:false, description:"Directos de tecnología", thumbnail:"" },
+  { id:"", handle:"@IdearVlog",            name:"idearVlog",               category:"Tecnología",       score:6, priority:3, enabled:true, shorts:false, description:"Tech y vlogs", thumbnail:"" },
+  { id:"", handle:"@new3sc",               name:"Domingo Gomes",           category:"Tecnología",       score:6, priority:3, enabled:true, shorts:false, description:"Tecnología y reviews", thumbnail:"" },
+  { id:"", handle:"@iManuMX",              name:"iManu Mx",                category:"Tecnología",       score:6, priority:3, enabled:true, shorts:false, description:"Tecnología en español", thumbnail:"" },
+  { id:"", handle:"@XatakaTV",             name:"Xataka",                  category:"Tecnología",       score:8, priority:1, enabled:true, shorts:false, description:"El referente tech en español", thumbnail:"" },
+  { id:"", handle:"@chicageek",            name:"ChicaGeek",               category:"Tecnología",       score:7, priority:2, enabled:true, shorts:false, description:"Tecnología desde otra perspectiva", thumbnail:"" },
+  { id:"", handle:"@NateGentile7",         name:"Nate Gentile",            category:"Tecnología",       score:7, priority:2, enabled:true, shorts:false, description:"Tecnología y hardware", thumbnail:"" },
+  { id:"", handle:"@CristoVega",           name:"Cristo Vega",             category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Reviews y entretenimiento", thumbnail:"" },
+  { id:"", handle:"@Eze.martinez",         name:"Eze Martínez",            category:"Ciencia",          score:7, priority:2, enabled:true, shorts:false, description:"Ciencia y tecnología", thumbnail:"" },
+  { id:"", handle:"@dateunvlog",           name:"Date Un Vlog",            category:"Ciencia",          score:8, priority:1, enabled:true, shorts:false, description:"Física y ciencia con Javier Santaolalla", thumbnail:"" },
+  { id:"", handle:"@QuantumFracture",      name:"QuantumFracture",         category:"Ciencia",          score:9, priority:1, enabled:true, shorts:false, description:"Física cuántica explicada genial", thumbnail:"" },
+  // ── Videojuegos y Cultura Digital ─────────────────────────────────────────
+  { id:"", handle:"@AlvaMajo",             name:"Alva Majo",               category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Videojuegos y entretenimiento", thumbnail:"" },
+  { id:"", handle:"@AlvaMajoGaming",       name:"Alva Majo Gaming",        category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Gaming con Alva Majo", thumbnail:"" },
+  { id:"", handle:"@Dan-PuertaAlSotano",   name:"Puerta al Sótano",        category:"Entretenimiento",  score:7, priority:2, enabled:true, shorts:false, description:"Cultura digital y videojuegos", thumbnail:"" },
+  { id:"", handle:"@LuLYeah",              name:"LuLYeah",                 category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Entretenimiento y gaming", thumbnail:"" },
+  { id:"", handle:"@Guinxu",               name:"Guinxu",                  category:"Gaming",           score:8, priority:1, enabled:true, shorts:false, description:"Desarrollo de videojuegos y gaming", thumbnail:"" },
+  { id:"", handle:"@LeyendasyVideojuegos", name:"Leyendas y Videojuegos",  category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Historia y cultura gamer", thumbnail:"" },
+  { id:"", handle:"@HashiramaReviews",     name:"Hashirama Reviews",       category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Reviews de anime y cultura", thumbnail:"" },
+  { id:"", handle:"@Likiriall",            name:"Liki",                    category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Entretenimiento y gaming", thumbnail:"" },
+  { id:"", handle:"@GuilleKutLive",        name:"Guille Kut Live",         category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Gaming en vivo", thumbnail:"" },
+  { id:"", handle:"@MetapodParaPresidenteTV", name:"Metapod Para Presidente", category:"Gaming",        score:6, priority:3, enabled:true, shorts:false, description:"Pokémon y gaming", thumbnail:"" },
+  { id:"", handle:"@karimero",             name:"Karimero",                category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Gaming y entretenimiento", thumbnail:"" },
+  { id:"", handle:"@LocoDami4n",           name:"Loco Damián",             category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Gaming y diversión", thumbnail:"" },
+  { id:"", handle:"@Danikyo",              name:"Danikyo",                 category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Gaming", thumbnail:"" },
+  { id:"", handle:"@Snivyman55real",       name:"Snivyman55",              category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"Gaming", thumbnail:"" },
+  { id:"", handle:"@GLITCH",               name:"GLITCH",                  category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Gaming y cultura gamer", thumbnail:"" },
+  { id:"", handle:"@slendytubbies3series", name:"Slendytubbies 3 Series",  category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"Serie Slendytubbies", thumbnail:"" },
+  { id:"", handle:"@vegetta777",           name:"Vegetta777",              category:"Gaming",           score:8, priority:1, enabled:true, shorts:false, description:"Gaming en español clásico", thumbnail:"" },
+  { id:"", handle:"@whatsupwinnie2",       name:"What's Up Winnie",        category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Entretenimiento", thumbnail:"" },
+  { id:"", handle:"@Sergind",              name:"Sergindsegasonic",        category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"Sega y gaming retro", thumbnail:"" },
+  { id:"", handle:"@Mundo_N",              name:"Mundo N",                 category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Entretenimiento y cultura", thumbnail:"" },
+  { id:"", handle:"@EdrezLalf",            name:"Edrez Lalf",              category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"Gaming", thumbnail:"" },
+  { id:"", handle:"@FalkrumTales",         name:"Falkrum Tales",           category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"Relatos y entretenimiento", thumbnail:"" },
+  // ── Minecraft ─────────────────────────────────────────────────────────────
+  { id:"", handle:"@ElRichMC",             name:"ElRichMC",                category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Minecraft y gaming", thumbnail:"" },
+  { id:"", handle:"@killercreeper55",      name:"KillerCreeper55",         category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"Minecraft", thumbnail:"" },
+  { id:"", handle:"@SadotATM",             name:"Sadot ATM",               category:"Gaming",           score:6, priority:3, enabled:true, shorts:false, description:"Minecraft", thumbnail:"" },
+  { id:"", handle:"@BobicraftMC",          name:"Bobicraft",               category:"Gaming",           score:7, priority:2, enabled:true, shorts:false, description:"Minecraft", thumbnail:"" },
+  // ── FNAF ──────────────────────────────────────────────────────────────────
+    { id:"", handle:"@ThəPaper",            name:"The Paper",               category:"Entretenimiento",  score:6, priority:3, enabled:true, shorts:false, description:"FNAF y contenido de terror", thumbnail:"" },
+  { id:"", handle:"@SUNAMNAPSTER",         name:"SUNAM NAPSTER",           category:"Gaming",           score:5, priority:4, enabled:true, shorts:false, description:"FNAF", thumbnail:"" },
+  // ── Cocina ────────────────────────────────────────────────────────────────
+  { id:"", handle:"@paulinacocina",        name:"Paulina Cocina",          category:"Cocina",           score:8, priority:1, enabled:true, shorts:false, description:"Cocina argentina accesible", thumbnail:"" },
+  { id:"", handle:"@mambrunense",          name:"Mambrunense",             category:"Cocina",           score:6, priority:3, enabled:true, shorts:false, description:"Cocina y gastronomía", thumbnail:"" },
+  // ── Comedia ───────────────────────────────────────────────────────────────
+  { id:"", handle:"@lasubreddemario",      name:"La Subred de Mario",      category:"Entretenimiento",  score:7, priority:2, enabled:true, shorts:false, description:"Comedia y entretenimiento", thumbnail:"" },
+  { id:"", handle:"@AuronPlay",            name:"AuronPlay",               category:"Entretenimiento",  score:9, priority:1, enabled:true, shorts:false, description:"El rey de la comedia gaming en español", thumbnail:"" },
+  { id:"", handle:"@PabloMolinari",        name:"Pablo Molinari",          category:"Entretenimiento",  score:7, priority:2, enabled:true, shorts:false, description:"Perdón Centenials y Datazo", thumbnail:"" },
+];
+
+const CATEGORIES = ["Educación","Ciencia","Tecnología","Arte","Música","Entretenimiento","Deportes","Cocina","Gaming","Noticias","Documentales","Infantil","Otros"];
+
+// ═══════════════════════════════════════════════
+// PROFILE — Default structure for a user profile
+// ═══════════════════════════════════════════════
+const DEFAULT_PROFILE = {
+  id: "",
+  name: "",
+  description: "",
+  avatar: null,
+  color: "#E50914",
+  theme: "dark",
+  createdAt: "",
+  config: {},
+  history: [],
+  favorites: [],
+  continueWatching: [],
+  stats: {
+    totalWatchTime: 0,
+    videosWatched: 0,
+    channelsWatched: [],
+    categoriesWatched: [],
+    sessions: 0,
+    searches: 0,
+  },
+};
+
+function uid() {
+  return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// ═══════════════════════════════════════════════
+// PRESET CHANNELS — se importan automáticamente al guardar la API Key
+// ═══════════════════════════════════════════════
+const PRESET_CHANNELS = []; // Todos los canales ya están en DEFAULT_WHITELIST
+
+// Visual profile presets
+const VISUAL_PROFILES = [
+  { id:"netflix", name:"Netflix", icon:"🎬", theme:"netflix", primaryColor:"#E50914", bgColor:"#0A0A0A", cardColor:"#1A1A1A", glowEffects:false, shadowEffects:true },
+  { id:"kids",    name:"Kids",   icon:"🧒", theme:"kids",    primaryColor:"#FF4081", bgColor:"#FFF9F0", cardColor:"#FFFFFF", kidsMode:true, fontFamily:"Nunito" },
+  { id:"cinema",  name:"Cinema", icon:"🎞", theme:"oled",    primaryColor:"#C0A050", bgColor:"#000000", cardColor:"#0A0A0A", shadowEffects:true, feedLayout:"cinematic" },
+  { id:"minimal", name:"Minimal",icon:"◻️", theme:"minimal", primaryColor:"#333",    bgColor:"#FAFAFA", cardColor:"#FFFFFF", shadowEffects:false, glowEffects:false },
+  { id:"gaming",  name:"Gaming", icon:"🎮", theme:"cyberpunk",primaryColor:"#FFE600",bgColor:"#0A0010", cardColor:"#140020", glowEffects:true, fontFamily:"Orbitron" },
+  { id:"synthwave",name:"Neon",  icon:"🌆", theme:"synthwave",primaryColor:"#FF2D78",bgColor:"#0D0221", cardColor:"#1A0530", glowEffects:true },
+  { id:"vaporwave",name:"Vapor", icon:"🌸", theme:"vaporwave",primaryColor:"#FF6EC7",bgColor:"#1A0A2E", cardColor:"#2A1540", glowEffects:false },
+  { id:"glass",   name:"Glass",  icon:"🪟", theme:"glassmorphism",primaryColor:"#E50914",bgColor:"#0A0A1E",cardColor:"rgba(255,255,255,0.07)",glowEffects:false },
+];
+
+// ═══════════════════════════════════════════════
+// CONTEXT
+// ═══════════════════════════════════════════════
+const AppContext = createContext(null);
+
+// ═══════════════════════════════════════════════
+// STORAGE HELPERS
+// ═══════════════════════════════════════════════
+const storage = {
+  get:(key,def)=>{ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; } },
+  set:(key,val)=>{ try{ localStorage.setItem(key,JSON.stringify(val)); }catch(e){} },
+  del:(key)=>{ try{ localStorage.removeItem(key); }catch(e){} },
+};
+
+const SERVER_DATA_URL = '/data';
+let _serverAvailable = window.location.protocol !== 'file:';
+let _pendingSave = null;
+let _saveTimer = null;
+let _saveQueue = Promise.resolve();
+
+const serverStorage = {
+  async loadAll() {
+    if (!_serverAvailable) return null;
+    try {
+      const res = await fetch(SERVER_DATA_URL, { signal: AbortSignal.timeout(3000) });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch(e) {
+      _serverAvailable = false;
+      return null;
+    }
+  },
+
+  async saveImmediate(key, val) {
+    try {
+      const payload = {};
+      payload[key] = val;
+      await fetch(SERVER_DATA_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch(e) { _serverAvailable = false; }
+  },
+
+  save(key, val) {
+    if (!_serverAvailable) return;
+    if (!_pendingSave) _pendingSave = {};
+    _pendingSave[key] = val;
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(() => {
+      const payload = _pendingSave;
+      _pendingSave = null;
+      _saveQueue = _saveQueue.then(() =>
+        fetch(SERVER_DATA_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(() => { _serverAvailable = false; })
+      );
+    }, 800);
+  },
+};
+
+// ═══════════════════════════════════════════════
+// AUTH HELPERS
+// ═══════════════════════════════════════════════
+const auth = {
+  getPassword:()=> storage.get('lt_admin_pw', DEFAULT_ADMIN_PASSWORD),
+  setPassword:(pw)=>{ storage.set('lt_admin_pw', pw); serverStorage.save('lt_admin_pw', pw); },
+};
+
+// ═══════════════════════════════════════════════
+// API KEY
+// ═══════════════════════════════════════════════
+const apiKeyStore = {
+  get:()=> storage.get('luztube_youtube_api',''),
+  set:(k)=> storage.set('luztube_youtube_api',k),
+  del:()=> storage.del('luztube_youtube_api'),
+};
+
+// ═══════════════════════════════════════════════
+// INDEXED DB HELPER — for large binary data
+// ═══════════════════════════════════════════════
+const idb = {
+  _db: null,
+  _ready: null,
+
+  async open() {
+    if (this._ready) return this._ready;
+    this._ready = new Promise((resolve, reject) => {
+      const req = indexedDB.open("LuzTubeDB", 2);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("avatars")) db.createObjectStore("avatars");
+        if (!db.objectStoreNames.contains("wallpapers")) db.createObjectStore("wallpapers");
+        if (!db.objectStoreNames.contains("fonts")) db.createObjectStore("fonts");
+      };
+      req.onsuccess = (e) => { this._db = e.target.result; resolve(); };
+      req.onerror = () => reject(req.error);
+    });
+    return this._ready;
+  },
+
+  async get(store, key) {
+    await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = this._db.transaction(store, "readonly");
+      const req = tx.objectStore(store).get(key);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async set(store, key, val) {
+    await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = this._db.transaction(store, "readwrite");
+      const req = tx.objectStore(store).put(val, key);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async del(store, key) {
+    await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = this._db.transaction(store, "readwrite");
+      const req = tx.objectStore(store).delete(key);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  },
+
+  async keys(store) {
+    await this.open();
+    return new Promise((resolve, reject) => {
+      const tx = this._db.transaction(store, "readonly");
+      const req = tx.objectStore(store).getAllKeys();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  },
+};
+
+// ═══════════════════════════════════════════════
+// IMAGE PROCESSING UTILITY (cross-device)
+// ═══════════════════════════════════════════════
+// Soporta HEIC/HEIF (iOS), EXIF orientation (mobile),
+// WebP con fallback a PNG, validación de tamaño,
+// y todos los modos/modos de wallpaper
+const processImage = async (file, opts = {}) => {
+  const {
+    maxSize,
+    width = null, height = null,
+    mode = "cover",
+    quality = 0.85,
+    blur = 0, darken = 0, brightness = 100, saturation = 100,
+  } = opts;
+
+  const MAX_BYTES = 50 * 1024 * 1024;
+  if (file.size > MAX_BYTES) {
+    throw new Error(`Imagen muy grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Máximo 50MB.`);
+  }
+
+  const canvasToBlob = (c, fmt, q) => new Promise(r => {
+    c.toBlob(b => { if (b) { r(b); return; } if (fmt === "image/webp") c.toBlob(r, "image/png"); else r(null); }, fmt, q);
+  });
+  const blobToURL = b => new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(b); });
+
+  let img, cleanupURL;
+  try {
+    const bitmap = await createImageBitmap(file);
+    img = { w: bitmap.width, h: bitmap.height, draw: (ctx, ...a) => ctx.drawImage(bitmap, ...a) };
+  } catch {
+    const url = URL.createObjectURL(file);
+    cleanupURL = url;
+    try {
+      img = await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve({ w: image.width, h: image.height, draw: (ctx, ...a) => ctx.drawImage(image, ...a) });
+        image.onerror = () => reject(new Error("Formato no soportado (prueba con JPEG/PNG)"));
+        image.src = url;
+      });
+    } finally { if (cleanupURL) URL.revokeObjectURL(cleanupURL); }
+  }
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const iw = img.w, ih = img.h;
+
+  if (maxSize) {
+    const s = Math.min(iw, ih, maxSize);
+    canvas.width = s; canvas.height = s;
+  } else if (width && height) {
+    canvas.width = width; canvas.height = height;
+  } else {
+    canvas.width = iw; canvas.height = ih;
+  }
+
+  const cw = canvas.width, ch = canvas.height;
+
+  if (maxSize) {
+    const s = Math.min(iw, ih);
+    img.draw(ctx, (iw - s) / 2, (ih - s) / 2, s, s, 0, 0, cw, ch);
+  } else if (mode === "tile") {
+    let tw = iw, th = ih;
+    if (tw > 1920 || th > 1080) { const sc = Math.min(1920 / tw, 1080 / th); tw = Math.round(tw * sc); th = Math.round(th * sc); }
+    canvas.width = tw; canvas.height = th;
+    img.draw(ctx, 0, 0, iw, ih, 0, 0, tw, th);
+  } else {
+    let sw = iw, sh = ih, dx = 0, dy = 0;
+    if (mode === "cover") { const sc = Math.max(cw / iw, ch / ih); sw = iw * sc; sh = ih * sc; dx = (cw - sw) / 2; dy = (ch - sh) / 2; }
+    else if (mode === "contain") { const sc = Math.min(cw / iw, ch / ih); sw = iw * sc; sh = ih * sc; dx = (cw - sw) / 2; dy = (ch - sh) / 2; }
+    else { sw = cw; sh = ch; }
+    img.draw(ctx, dx, dy, sw, sh);
+  }
+
+  if (blur > 0 || brightness !== 100 || saturation !== 100 || darken > 0) {
+    const temp = document.createElement("canvas"); temp.width = cw; temp.height = ch;
+    const tc = temp.getContext("2d");
+    tc.filter = `blur(${blur}px) brightness(${brightness}%) saturate(${saturation}%)`;
+    tc.drawImage(canvas, 0, 0);
+    tc.filter = "none";
+    if (darken > 0) { tc.fillStyle = `rgba(0,0,0,${darken / 100})`; tc.fillRect(0, 0, cw, ch); }
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(temp, 0, 0);
+  }
+
+  const blob = await canvasToBlob(canvas, "image/webp", quality);
+  if (!blob) throw new Error("No se pudo procesar la imagen");
+  return await blobToURL(blob);
+};
+
+const avatarProcessor = {
+  async process(file) { return processImage(file, { maxSize: 256, quality: 0.85 }); },
+
+  getInitialAvatar(name, color) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 128; canvas.height = 128;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = color || "#E50914";
+    ctx.beginPath(); ctx.arc(64, 64, 64, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 56px sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText((name || "?")[0].toUpperCase(), 64, 64);
+    return canvas.toDataURL("image/webp", 0.9);
+  },
+};
+
+const wallpaperProcessor = {
+  async process(file, opts = {}) {
+    const { mode = "cover", blur = 0, darken = 0, brightness = 100, saturation = 100 } = opts;
+    const dataUrl = await processImage(file, { width: 1920, height: 1080, mode, quality: 0.82, blur, darken, brightness, saturation });
+    return { dataUrl, mode, blur, darken, brightness, saturation };
+  },
+};
+
+// ═══════════════════════════════════════════════
+// FONT MANAGER
+// ═══════════════════════════════════════════════
+const fontManager = {
+  async install(file) {
+    const ext = file.name.split(".").pop().toLowerCase();
+    if (!["ttf", "otf", "woff", "woff2"].includes(ext)) throw new Error("Formato no soportado. Usá TTF, OTF, WOFF o WOFF2.");
+    const dataUrl = await new Promise((resolve) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.readAsDataURL(file);
+    });
+    const fontFace = new FontFace(file.name.replace(/\.[^.]+$/, ""), `url(${dataUrl})`);
+    await fontFace.load();
+    document.fonts.add(fontFace);
+    const font = {
+      id: uid(),
+      name: file.name.replace(/\.[^.]+$/, ""),
+      fullName: file.name,
+      ext,
+      size: file.size,
+      dataUrl,
+      installedAt: new Date().toISOString(),
+      active: true,
+    };
+    const existing = await idb.get("fonts", "installed") || [];
+    existing.push(font);
+    await idb.set("fonts", "installed", existing);
+    return font;
+  },
+
+  async list() {
+    return (await idb.get("fonts", "installed")) || [];
+  },
+
+  async toggle(id) {
+    const list = await this.list();
+    const font = list.find((f) => f.id === id);
+    if (!font) return;
+    font.active = !font.active;
+    if (font.active) {
+      const ff = new FontFace(font.name, `url(${font.dataUrl})`);
+      await ff.load();
+      document.fonts.add(ff);
+    }
+    await idb.set("fonts", "installed", list);
+  },
+
+  async remove(id) {
+    let list = await this.list();
+    list = list.filter((f) => f.id !== id);
+    await idb.set("fonts", "installed", list);
+  },
+
+  async getFontNames() {
+    const list = await this.list();
+    return list.filter((f) => f.active).map((f) => f.name);
+  },
+};
+
+// ═══════════════════════════════════════════════
+// PROFILE MANAGER
+// ═══════════════════════════════════════════════
+const profileManager = {
+  _profiles: [],
+  _activeId: null,
+  _listeners: [],
+
+  onChange(fn) { this._listeners.push(fn); return () => { this._listeners = this._listeners.filter(l => l !== fn); }; },
+  _notify() { this._listeners.forEach(fn => fn(this._profiles, this._activeId)); },
+
+  async init(serverData) {
+    const fromServer = serverData?.lt_profiles;
+    const fromLocal = storage.get("lt_profiles", null);
+    this._profiles = fromServer || fromLocal || [];
+    this._activeId = storage.get("lt_active_profile", null);
+    if (this._profiles.length === 0) {
+      await this._migrateFromLegacy(serverData);
+    }
+    if (this._profiles.length > 0 && !this._profiles.find(p => p.id === this._activeId)) {
+      this._activeId = this._profiles[0].id;
+      storage.set("lt_active_profile", this._activeId);
+    }
+    this._notify();
+    this._persist();
+  },
+
+  async _migrateFromLegacy(serverData) {
+    const oldHistory = serverData?.lt_history || storage.get("lt_history", []);
+    const oldFavorites = serverData?.lt_favorites || storage.get("lt_favorites", []);
+    const oldConfig = serverData?.lt_config || storage.get("lt_config", {});
+    if (oldHistory.length === 0 && oldFavorites.length === 0 && Object.keys(oldConfig).length === 0) {
+      this._profiles = [];
+      this._activeId = null;
+      this._notify();
+      return;
+    }
+    const profile = {
+      ...DEFAULT_PROFILE,
+      id: uid(),
+      name: "Principal",
+      description: "Perfil migrado automáticamente",
+      color: "#E50914",
+      createdAt: new Date().toISOString(),
+      history: oldHistory,
+      favorites: oldFavorites,
+      config: oldConfig,
+    };
+    this._profiles = [profile];
+    this._activeId = profile.id;
+    storage.set("lt_active_profile", this._activeId);
+    storage.del("lt_history");
+    storage.del("lt_favorites");
+    this._notify();
+    this._persist();
+  },
+
+  getProfiles() { return [...this._profiles]; },
+  getActive() { return this._profiles.find(p => p.id === this._activeId) || null; },
+  getActiveId() { return this._activeId; },
+
+  create(data) {
+    const profile = {
+      ...DEFAULT_PROFILE,
+      ...data,
+      id: uid(),
+      createdAt: new Date().toISOString(),
+      stats: { ...DEFAULT_PROFILE.stats },
+    };
+    this._profiles.push(profile);
+    this._activeId = profile.id;
+    storage.set("lt_active_profile", this._activeId);
+    this._notify();
+    this._persist();
+    return profile;
+  },
+
+  update(id, data) {
+    const idx = this._profiles.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    this._profiles[idx] = { ...this._profiles[idx], ...data };
+    this._notify();
+    this._persist();
+  },
+
+  remove(id) {
+    this._profiles = this._profiles.filter(p => p.id !== id);
+    if (this._activeId === id) {
+      this._activeId = this._profiles.length > 0 ? this._profiles[0].id : null;
+      storage.set("lt_active_profile", this._activeId || "");
+    }
+    this._notify();
+    this._persist();
+  },
+
+  switchTo(id) {
+    if (this._profiles.find(p => p.id === id)) {
+      this._activeId = id;
+      storage.set("lt_active_profile", id);
+      this._notify();
+    }
+  },
+
+  getProfileData(id, key) {
+    const p = this._profiles.find(p => p.id === id);
+    return p ? p[key] : null;
+  },
+
+  setProfileData(id, key, val) {
+    const idx = this._profiles.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    this._profiles[idx][key] = val;
+    this._notify();
+    this._persist();
+  },
+
+  _persist() {
+    const data = this._profiles.map(p => ({
+      ...p,
+      avatar: null,
+    }));
+    storage.set("lt_profiles", data);
+    serverStorage.save("lt_profiles", data);
+  },
+
+  async saveAvatar(profileId, dataUrl) {
+    await idb.set("avatars", profileId, dataUrl);
+    const idx = this._profiles.findIndex(p => p.id === profileId);
+    if (idx !== -1) this._profiles[idx].avatar = `idb:${profileId}`;
+    this._notify();
+  },
+
+  async getAvatar(profileId) {
+    const p = this._profiles.find(p => p.id === profileId);
+    if (!p) return null;
+    if (p.avatar && p.avatar.startsWith("idb:")) {
+      return await idb.get("avatars", profileId);
+    }
+    return p.avatar || null;
+  },
+
+  async saveWallpaper(profileId, wallpaperData) {
+    await idb.set("wallpapers", profileId, wallpaperData);
+    this.update(profileId, { wallpaper: `idb:${profileId}` });
+  },
+
+  async getWallpaper(profileId) {
+    const p = this._profiles.find(p => p.id === profileId);
+    if (!p || !p.wallpaper) return null;
+    if (p.wallpaper.startsWith("idb:")) {
+      return await idb.get("wallpapers", profileId);
+    }
+    return p.wallpaper;
+  },
+
+  getMergedConfig(profileId) {
+    const p = this._profiles.find(p => p.id === profileId);
+    const global = storage.get("lt_config", DEFAULT_CONFIG);
+    return p ? { ...global, ...p.config } : global;
+  },
+};
+
+// ═══════════════════════════════════════════════
+// STATS TRACKER
+// ═══════════════════════════════════════════════
+const statsTracker = {
+  _sessionStart: null,
+
+  startSession() { this._sessionStart = Date.now(); },
+
+  async track(profileId, type, data = {}) {
+    const p = profileManager.getProfiles().find(pr => pr.id === profileId);
+    if (!p) return;
+    const stats = p.stats || { ...DEFAULT_PROFILE.stats };
+    switch (type) {
+      case "watch":
+        stats.videosWatched = (stats.videosWatched || 0) + 1;
+        if (data.channelId && !stats.channelsWatched.includes(data.channelId)) {
+          stats.channelsWatched.push(data.channelId);
+        }
+        if (data.category && !stats.categoriesWatched.includes(data.category)) {
+          stats.categoriesWatched.push(data.category);
+        }
+        if (data.duration) stats.totalWatchTime = (stats.totalWatchTime || 0) + data.duration;
+        break;
+      case "search":
+        stats.searches = (stats.searches || 0) + 1;
+        break;
+      case "session_end":
+        if (this._sessionStart) {
+          stats.sessions = (stats.sessions || 0) + 1;
+          this._sessionStart = null;
+        }
+        break;
+    }
+    p.stats = stats;
+    profileManager._notify();
+    profileManager._persist();
+  },
+};
+
+// ═══════════════════════════════════════════════
+// ACTIVITY LOGGER
+// ═══════════════════════════════════════════════
+const activityLogger = {
+  async log(action, details = {}) {
+    let log = storage.get("lt_activity_log", []);
+    log.unshift({
+      id: uid(),
+      action,
+      details,
+      timestamp: new Date().toISOString(),
+    });
+    if (log.length > 500) log = log.slice(0, 500);
+    storage.set("lt_activity_log", log);
+    serverStorage.save("lt_activity_log", log);
+  },
+
+  get() { return storage.get("lt_activity_log", []); },
+  clear() { storage.set("lt_activity_log", []); serverStorage.save("lt_activity_log", []); },
+};
+
+// ═══════════════════════════════════════════════
+// DATA MIGRATION MANAGER
+// ═══════════════════════════════════════════════
+const migrationManager = {
+  async run(serverData) {
+    let migrated = false;
+    const version = storage.get("lt_data_version", 0);
+    if (version < 1) {
+      if (serverData?.lt_history || storage.get("lt_history", []).length > 0) {
+        await profileManager._migrateFromLegacy(serverData);
+        migrated = true;
+      }
+      storage.set("lt_data_version", 1);
+    }
+    if (version < 2) {
+      storage.set("lt_data_version", 2);
+      migrated = true;
+    }
+    if (migrated) {
+      await activityLogger.log("data_migration", { fromVersion: version, toVersion: storage.get("lt_data_version", 1) });
+    }
+    return migrated;
+  },
+};
+
+// ═══════════════════════════════════════════════
+// VIDEO ID HELPER
+// ═══════════════════════════════════════════════
+function getVideoId(video) {
+  if (!video) return null;
+  const rid = video?.snippet?.resourceId?.videoId;
+  if (rid && /^[\w-]{6,20}$/.test(rid)) return rid;
+  const idVid = video?.id?.videoId;
+  if (idVid && /^[\w-]{6,20}$/.test(idVid)) return idVid;
+  const idStr = video?.id;
+  if (typeof idStr === 'string' && /^[\w-]{6,20}$/.test(idStr)) return idStr;
+  return null;
+}
+
+// ═══════════════════════════════════════════════
+// YOUTUBE API SERVICE
+// ═══════════════════════════════════════════════
+const ytAPI = {
+  async getVideos(channelId, apiKey, maxResults=8, pageToken=null) {
+    if (!apiKey || apiKey===YOUTUBE_API_KEY_PLACEHOLDER) return null;
+    try {
+      const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails,snippet&id=${channelId}&key=${apiKey}`);
+      const chData = await chRes.json();
+      if (chData.error) return { error: chData.error.message };
+      if (!chData.items?.length) return null;
+      const uploadList = chData.items[0].contentDetails.relatedPlaylists.uploads;
+      const thumb = chData.items[0].snippet?.thumbnails?.default?.url||"";
+      const tokenParam = pageToken?`&pageToken=${pageToken}`:'';
+      const plRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadList}&maxResults=${maxResults}${tokenParam}&key=${apiKey}`);
+      const plData = await plRes.json();
+      return { videos: plData.items||[], channelThumb: thumb, nextPageToken: plData.nextPageToken||null, uploadPlaylistId: uploadList };
+    } catch(e) { return null; }
+  },
+  async getMoreVideos(uploadPlaylistId, apiKey, maxResults=12, pageToken) {
+    if (!apiKey||!pageToken) return null;
+    try {
+      const plRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadPlaylistId}&maxResults=${maxResults}&pageToken=${pageToken}&key=${apiKey}`);
+      const plData = await plRes.json();
+      return { videos: plData.items||[], nextPageToken: plData.nextPageToken||null };
+    } catch(e) { return null; }
+  },
+  async searchInChannel(channelId, query, apiKey) {
+    if (!apiKey||apiKey===YOUTUBE_API_KEY_PLACEHOLDER) return [];
+    try {
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&q=${encodeURIComponent(query)}&type=video&maxResults=10&key=${apiKey}`);
+      const data = await res.json();
+      return data.items||[];
+    } catch(e){ return []; }
+  },
+  async resolveChannel(input, apiKey) {
+    if (!apiKey||apiKey===YOUTUBE_API_KEY_PLACEHOLDER) return null;
+    const clean = input.trim();
+    try {
+      if (/^UC[\w-]{20,}$/.test(clean)) {
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${clean}&key=${apiKey}`);
+        const data = await res.json();
+        if (data.error) return { error: data.error.message };
+        if (data.items?.length) {
+          const ch = data.items[0];
+          return { id:ch.id, name:ch.snippet.title, thumbnail:ch.snippet.thumbnails?.default?.url||'' };
+        }
+        return null;
+      }
+      const handle = clean.startsWith('@')?clean:'@'+clean;
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle=${encodeURIComponent(handle)}&key=${apiKey}`);
+      const data = await res.json();
+      if (data.error) return { error: data.error.message };
+      if (data.items?.length) {
+        const ch = data.items[0];
+        return { id:ch.id, name:ch.snippet.title, thumbnail:ch.snippet.thumbnails?.default?.url||'' };
+      }
+      return null;
+    } catch(e) { return null; }
+  },
+  async validateKey(apiKey) {
+    try {
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=US&key=${apiKey}`);
+      const data = await res.json();
+      if (data.error) return { valid:false, message:data.error.message };
+      return { valid:true };
+    } catch(e) { return { valid:false, message:'Error de red' }; }
+  },
+};
+
+// ═══════════════════════════════════════════════
+// MOCK DATA
+// ═══════════════════════════════════════════════
+function mockVideos(channel, count=6) {
+  const titles = [
+    "El misterio más grande del universo explicado",
+    "¿Qué pasaría si cayeras en un agujero negro?",
+    "La historia que nadie te contó sobre esto",
+    "Experimento increíble que cambia todo",
+    "Por qué esto es más interesante de lo que crees",
+    "El problema que los científicos no pueden resolver",
+    "Así funciona realmente el cerebro humano",
+    "La tecnología que cambiará el mundo en 10 años",
+    "¿Por qué no podemos dormir bien?",
+    "El truco matemático más elegante del mundo",
+  ];
+  return Array.from({length:count},(_,i)=>({
+    id:{ videoId:`demo_${channel.id}_${i}` },
+    snippet:{
+      title: titles[i%titles.length],
+      channelTitle: channel.name,
+      channelId: channel.id,
+      publishedAt: new Date(Date.now()-i*86400000*3).toISOString(),
+      thumbnails:{ medium:{ url:`https://picsum.photos/seed/${channel.id}${i}/320/180` } },
+      description: "Un video fascinante sobre temas que cambiarán tu perspectiva del mundo.",
+    },
+    _duration:`${Math.floor(Math.random()*20)+2}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`,
+    _isMock:true,
+  }));
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function ToastContainer({ toasts, removeToast }) {
+  return (
+    <div className="toast-container">
+      {toasts.map(t=>(
+        <div key={t.id} className={`toast toast-${t.type}`} onClick={()=>removeToast(t.id)}>
+          <span>{t.type==='success'?'✓':t.type==='error'?'✕':'ℹ'}</span>
+          <span>{t.message}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// TOGGLE
+// ═══════════════════════════════════════════════
+function Toggle({ checked, onChange }) {
+  return (
+    <label className="dt-toggle">
+      <input type="checkbox" checked={checked} onChange={e=>onChange(e.target.checked)}/>
+      <div className="dt-toggle-track"><div className="dt-toggle-thumb"/></div>
+    </label>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// VIDEO SKELETON
+// ═══════════════════════════════════════════════
+function VideoSkeleton({ count=6 }) {
+  return (
+    <div className="vid-grid">
+      {Array.from({length:count}).map((_,i)=>(
+        <div key={i}>
+          <div className="vid-thumb skeleton" style={{aspectRatio:'16/9',borderRadius:8,marginBottom:10}}/>
+          <div className="skeleton" style={{height:14,marginBottom:6,borderRadius:4,width:'85%'}}/>
+          <div className="skeleton" style={{height:12,borderRadius:4,width:'60%'}}/>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// VIDEO CARD
+// ═══════════════════════════════════════════════
+function VideoCard({ video, onClick, isFavorite, onToggleFavorite }) {
+  const thumb = video.snippet?.thumbnails?.medium?.url || video.snippet?.thumbnails?.default?.url || '';
+  const title = video.snippet?.title || '';
+  const channel = video.snippet?.channelTitle || '';
+  const date = video.snippet?.publishedAt ? new Date(video.snippet.publishedAt).toLocaleDateString('es-AR',{month:'short',day:'numeric',year:'numeric'}) : '';
+  const dur = video._duration || '';
+  return (
+    <div className="vid-card fade-enter">
+      <div className="vid-thumb" onClick={onClick}>
+        <img className="vid-thumb-inner" src={thumb} alt={title} loading="lazy" onError={e=>{e.target.src=`https://picsum.photos/seed/${Math.random()*999|0}/320/180`;}}/>
+        {dur && <span className="vid-duration">{dur}</span>}
+        <button
+          onClick={e=>{e.stopPropagation();onToggleFavorite&&onToggleFavorite(video);}}
+          style={{position:'absolute',top:6,left:6,background:'rgba(0,0,0,0.6)',border:'none',cursor:'pointer',color:isFavorite?'#FFD700':'white',fontSize:16,width:30,height:30,borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center'}}
+        >{isFavorite?'★':'☆'}</button>
+      </div>
+      <div className="vid-info">
+        <div className="vid-channel">{channel}</div>
+        <div className="vid-title" title={title}>{title}</div>
+        <div className="vid-meta">{date}</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// YOUTUBE PLAYER
+// ═══════════════════════════════════════════════
+function YoutubePlayer({ videoId, title }) {
+  const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&playsinline=1`;
+
+  return (
+    <div style={{position:'relative',width:'100%',aspectRatio:'16/9',background:'#000',borderRadius:8,overflow:'hidden'}}>
+      <iframe
+        src={embedUrl}
+        title={title||'Video'}
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        allowFullScreen
+        style={{width:'100%',height:'100%',border:'none',display:'block'}}
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
+      <a
+        href={ytUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{position:'absolute',bottom:10,right:10,background:'rgba(0,0,0,0.75)',color:'#fff',padding:'5px 12px',borderRadius:6,fontSize:12,fontWeight:600,textDecoration:'none',zIndex:10}}
+      >▶ YouTube</a>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PLAYER MODAL
+// ═══════════════════════════════════════════════
+function PlayerModal({ video, onClose, onNext, onHistory }) {
+  const ctx = useContext(AppContext);
+  const videoId = getVideoId(video)||video?.id;
+  const isDemo = String(videoId).startsWith('demo_');
+  useEffect(()=>{ if(video) onHistory&&onHistory(video); },[video]);
+  useEffect(()=>{
+    const h=e=>{if(e.key==='Escape')onClose();};
+    window.addEventListener('keydown',h);
+    return()=>window.removeEventListener('keydown',h);
+  },[]);
+  return (
+    <div className="dt-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="dt-modal" style={{maxWidth:920}}>
+        <div className="dt-modal-header">
+          <button className="btn btn-ghost btn-icon" onClick={onClose} style={{fontSize:22,padding:6}}>✕</button>
+          <div style={{flex:1,overflow:'hidden'}}>
+            <div style={{fontSize:15,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{video?.snippet?.title}</div>
+            <div style={{fontSize:12,color:'var(--dt-text3)'}}>{video?.snippet?.channelTitle}</div>
+          </div>
+          {onNext&&ctx.config.nextAutoplay&&<button className="btn btn-secondary btn-sm" onClick={onNext}>Siguiente →</button>}
+        </div>
+        <div className="dt-modal-body" style={{padding:0}}>
+          <div className="player-wrap">
+            {isDemo?(
+              <div style={{aspectRatio:'16/9',background:'#000',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16,padding:32}}>
+                <div style={{fontSize:64}}>▶</div>
+                <div style={{textAlign:'center'}}>
+                  <div style={{fontSize:16,fontWeight:600,marginBottom:8}}>Modo Demo Activo</div>
+                  <div style={{fontSize:13,color:'var(--dt-text2)',maxWidth:400}}>Configura tu YouTube API Key en "Conexión YouTube" para ver videos reales.</div>
+                </div>
+              </div>
+            ):(
+              <YoutubePlayer videoId={videoId} title={video?.snippet?.title}/>
+            )}
+          </div>
+          {video?.snippet?.description&&(
+            <div style={{padding:'16px 20px',fontSize:13,color:'var(--dt-text2)',lineHeight:1.6,borderTop:'1px solid var(--dt-border)'}}>
+              {video.snippet.description.slice(0,280)}{video.snippet.description.length>280?'...':''}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// HOME PAGE
+// ═══════════════════════════════════════════════
+function HomePage() {
+  const ctx = useContext(AppContext);
+  const { whitelist, config, favorites, toggleFavorite, addHistory } = ctx;
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('Todos');
+  const [playingVideo, setPlayingVideo] = useState(null);
+  const [playingIdx, setPlayingIdx] = useState(-1);
+
+  const enabledChannels = useMemo(()=>whitelist.filter(ch=>ch.enabled).sort((a,b)=>b.score-a.score||a.priority-b.priority),[whitelist]);
+
+  useEffect(()=>{
+    setLoading(true);
+    const key = config.youtubeApiKey||apiKeyStore.get();
+    if (!key||key===YOUTUBE_API_KEY_PLACEHOLDER) {
+      const all = enabledChannels.flatMap(ch=>mockVideos(ch,4+Math.min(ch.score,6)));
+      all.sort(()=>Math.random()-0.5);
+      setVideos(all); setLoading(false); return;
+    }
+    const chWithId=enabledChannels.filter(ch=>ch.id&&/^UC[\w-]{20,}$/.test(ch.id));
+    const chHandleOnly=enabledChannels.filter(ch=>!ch.id||!/^UC[\w-]{20,}$/.test(ch.id));
+    const mockFallback=chHandleOnly.flatMap(ch=>mockVideos(ch,3));
+    if(!chWithId.length){ setVideos(mockFallback); setLoading(false); return; }
+    Promise.all(chWithId.map(ch=>ytAPI.getVideos(ch.id,key,6))).then(results=>{
+      const all=[...mockFallback];
+      results.forEach((r,i)=>{ if(r?.videos) r.videos.forEach(v=>all.push({...v,_channelScore:chWithId[i].score,_channelThumb:r.channelThumb})); });
+      all.sort((a,b)=>(b._channelScore||0)-(a._channelScore||0));
+      setVideos(all); setLoading(false);
+    });
+  },[enabledChannels,config.youtubeApiKey]);
+
+  const categories = useMemo(()=>['Todos',...new Set(enabledChannels.map(ch=>ch.category))],[enabledChannels]);
+  const filtered = useMemo(()=>{
+    if(activeCategory==='Todos') return videos;
+    const catIds = new Set(enabledChannels.filter(ch=>ch.category===activeCategory).map(ch=>ch.id));
+    return videos.filter(v=>catIds.has(v.snippet?.channelId));
+  },[videos,activeCategory,enabledChannels]);
+
+  const hero = filtered[0];
+  const playVideo=(v,idx)=>{setPlayingVideo(v);setPlayingIdx(idx);};
+  const playNext=()=>{ const ni=playingIdx+1; if(ni<filtered.length){setPlayingVideo(filtered[ni]);setPlayingIdx(ni);} };
+
+  if (!enabledChannels.length) return (
+    <div className="dt-page">
+      <div className="empty-state">
+        <div className="empty-icon">📺</div>
+        <div className="empty-title">No hay canales aprobados</div>
+        <div className="empty-sub">Agrega canales en el Panel Admin para comenzar</div>
+      </div>
+    </div>
+  );
+
+  const layoutClass = `layout-${config.feedLayout||'grid'}`;
+
+  return (
+    <div className={`dt-page ${layoutClass}`}>
+      {hero&&!loading&&(
+        <div className="hero-banner" style={{cursor:'pointer'}} onClick={()=>playVideo(hero,0)}>
+          <img className="hero-bg" src={hero.snippet?.thumbnails?.maxres?.url||hero.snippet?.thumbnails?.medium?.url} alt="" onError={e=>{e.target.style.display='none';}}/>
+          <div className="hero-gradient"/>
+          <div className="hero-content">
+            <div className="hero-category">📺 {hero.snippet?.channelTitle}</div>
+            <div className="hero-title">{hero.snippet?.title}</div>
+            <div className="hero-meta">{new Date(hero.snippet?.publishedAt||Date.now()).toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'})}</div>
+            <div style={{display:'flex',gap:10}}>
+              <button className="btn btn-primary">▶ Reproducir</button>
+              <button className="btn btn-secondary" onClick={e=>{e.stopPropagation();toggleFavorite(hero);}}>
+                {favorites.find(f=>getVideoId(f)===getVideoId(hero))?'★ Favorito':'☆ Agregar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="pill-tabs">
+        {categories.map(cat=><div key={cat} className={`pill-tab ${activeCategory===cat?'active':''}`} onClick={()=>setActiveCategory(cat)}>{cat}</div>)}
+      </div>
+      <div className="section-header">
+        <div className="section-dot"/>
+        <div className="section-title">{activeCategory==='Todos'?'Videos Recientes':activeCategory}</div>
+        <span className="text-dim" style={{fontSize:13}}>{filtered.length} videos</span>
+      </div>
+      {loading?<VideoSkeleton count={8}/>:(
+        filtered.length===0?<div className="empty-state"><div className="empty-icon">🔍</div><div className="empty-title">Sin videos</div></div>:(
+          <div className="vid-grid">
+            {filtered.slice(1).map((v,i)=>(
+              <VideoCard key={getVideoId(v)||i} video={v} onClick={()=>playVideo(v,i+1)}
+                isFavorite={!!favorites.find(f=>getVideoId(f)===getVideoId(v))}
+                onToggleFavorite={toggleFavorite}/>
+            ))}
+          </div>
+        )
+      )}
+      {playingVideo&&<PlayerModal video={playingVideo} onClose={()=>setPlayingVideo(null)} onNext={playNext} onHistory={addHistory}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// SEARCH PAGE
+// ═══════════════════════════════════════════════
+function SearchPage({ query }) {
+  const ctx = useContext(AppContext);
+  const { whitelist, config, favorites, toggleFavorite, addHistory } = ctx;
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [playingVideo, setPlayingVideo] = useState(null);
+  const enabledChannels = whitelist.filter(ch=>ch.enabled);
+
+  useEffect(()=>{
+    if(!query) return;
+    setLoading(true);
+    const q=query.toLowerCase();
+    const key=config.youtubeApiKey||apiKeyStore.get();
+    if(!key||key===YOUTUBE_API_KEY_PLACEHOLDER) {
+      const all=enabledChannels.flatMap(ch=>mockVideos(ch,8));
+      setResults(all.filter(v=>v.snippet.title.toLowerCase().includes(q)||v.snippet.channelTitle.toLowerCase().includes(q)));
+      setLoading(false); return;
+    }
+    const chIds=enabledChannels.filter(ch=>ch.id&&/^UC[\w-]{20,}$/.test(ch.id));
+    if(!chIds.length){setResults([]);setLoading(false);return;}
+    Promise.all(chIds.map(ch=>ytAPI.searchInChannel(ch.id,query,key))).then(r=>{ setResults(r.flat()); setLoading(false); });
+  },[query]);
+
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:20}}>
+        <div className="section-dot"/>
+        <div className="section-title">Resultados para "{query}"</div>
+        {!loading&&<span className="text-dim" style={{fontSize:13}}>{results.length} resultados</span>}
+      </div>
+      <div style={{marginBottom:16,padding:'10px 14px',background:'rgba(70,211,105,0.08)',border:'1px solid rgba(70,211,105,0.2)',borderRadius:8,fontSize:13,color:'var(--dt-success)'}}>
+        🔒 Búsqueda limitada a {enabledChannels.length} canales aprobados
+      </div>
+      {loading?<VideoSkeleton count={6}/>:results.length===0?(
+        <div className="empty-state"><div className="empty-icon">🔍</div><div className="empty-title">Sin resultados</div><div className="empty-sub">No se encontraron videos para "{query}"</div></div>
+      ):(
+        <div className="vid-grid">
+          {results.map((v,i)=>(
+            <VideoCard key={i} video={v} onClick={()=>setPlayingVideo(v)}
+              isFavorite={!!favorites.find(f=>getVideoId(f)===getVideoId(v))}
+              onToggleFavorite={toggleFavorite}/>
+          ))}
+        </div>
+      )}
+      {playingVideo&&<PlayerModal video={playingVideo} onClose={()=>setPlayingVideo(null)} onHistory={addHistory}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// CHANNELS PAGE
+// ═══════════════════════════════════════════════
+function ChannelsPage() {
+  const ctx = useContext(AppContext);
+  const { whitelist, config, addHistory, favorites, toggleFavorite } = ctx;
+  const [selected, setSelected] = useState(null);
+  const [channelVideos, setChannelVideos] = useState([]);
+  const [loadingVids, setLoadingVids] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [uploadPlaylistId, setUploadPlaylistId] = useState(null);
+  const [playingVideo, setPlayingVideo] = useState(null);
+  const [filterCat, setFilterCat] = useState('Todos');
+
+  const enabled = whitelist.filter(ch=>ch.enabled);
+  const cats = ['Todos',...new Set(enabled.map(ch=>ch.category))];
+  const filtered = filterCat==='Todos'?enabled:enabled.filter(ch=>ch.category===filterCat);
+
+  const loadChannel=(ch)=>{
+    setSelected(ch); setLoadingVids(true); setChannelVideos([]); setNextPageToken(null); setUploadPlaylistId(null);
+    const key = config.youtubeApiKey||apiKeyStore.get();
+    if(!key||key===YOUTUBE_API_KEY_PLACEHOLDER) { setChannelVideos(mockVideos(ch,12)); setLoadingVids(false); return; }
+    if(!ch.id||!/^UC[\w-]{20,}$/.test(ch.id)) { setChannelVideos(mockVideos(ch,12)); setLoadingVids(false); return; }
+    ytAPI.getVideos(ch.id,key,12).then(r=>{ setChannelVideos(r?.videos||[]); setNextPageToken(r?.nextPageToken||null); setUploadPlaylistId(r?.uploadPlaylistId||null); setLoadingVids(false); });
+  };
+
+  const loadMoreVideos=()=>{
+    if(!nextPageToken||!uploadPlaylistId||loadingMore) return;
+    setLoadingMore(true);
+    const key = config.youtubeApiKey||apiKeyStore.get();
+    ytAPI.getMoreVideos(uploadPlaylistId,key,12,nextPageToken).then(r=>{ setChannelVideos(prev=>[...prev,...(r?.videos||[])]); setNextPageToken(r?.nextPageToken||null); setLoadingMore(false); });
+  };
+
+  const colorMap={"Educación":"var(--dt-info)","Ciencia":"var(--dt-success)","Tecnología":"var(--dt-primary)","Arte":"var(--dt-accent)","Música":"#A855F7","Gaming":"var(--dt-warning)"};
+
+  return (
+    <div className="dt-page">
+      {selected?(
+        <>
+          <button className="btn btn-secondary btn-sm" onClick={()=>setSelected(null)} style={{marginBottom:20}}>← Todos los canales</button>
+          <div style={{display:'flex',alignItems:'center',gap:16,marginBottom:28}}>
+            <div className="ch-avatar" style={{width:72,height:72,fontSize:28,background:'var(--dt-primary)',color:'white'}}>{selected.name[0]}</div>
+            <div>
+              <div style={{fontSize:22,fontWeight:700}}>{selected.name}</div>
+              <div style={{display:'flex',gap:8,marginTop:6,alignItems:'center'}}>
+                <span className="badge badge-blue">{selected.category}</span>
+                <span style={{fontSize:12,color:'var(--dt-text3)'}}>Score {selected.score}/10</span>
+              </div>
+              {selected.description&&<div style={{fontSize:13,color:'var(--dt-text2)',marginTop:6}}>{selected.description}</div>}
+            </div>
+          </div>
+          <div className="section-header">
+            <div className="section-dot"/>
+            <div className="section-title">Videos del Canal</div>
+          </div>
+          {loadingVids?<VideoSkeleton count={6}/>:(
+            <>
+              <div className="vid-grid">
+                {channelVideos.map((v,i)=>(
+                  <VideoCard key={getVideoId(v)||i} video={v} onClick={()=>setPlayingVideo(v)}
+                    isFavorite={!!favorites.find(f=>getVideoId(f)===getVideoId(v))}
+                    onToggleFavorite={toggleFavorite}/>
+                ))}
+              </div>
+              {nextPageToken&&(
+                <div style={{textAlign:'center',marginTop:28}}>
+                  <button className="btn btn-secondary" onClick={loadMoreVideos} disabled={loadingMore} style={{minWidth:180}}>
+                    {loadingMore?'⏳ Cargando...':'⬇ Cargar más videos'}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ):(
+        <>
+          <div className="section-header" style={{marginBottom:20}}>
+            <div className="section-dot"/>
+            <div className="section-title">Canales Aprobados</div>
+            <span className="badge badge-green">{enabled.length} canales</span>
+          </div>
+          <div className="pill-tabs">
+            {cats.map(c=><div key={c} className={`pill-tab ${filterCat===c?'active':''}`} onClick={()=>setFilterCat(c)}>{c}</div>)}
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:14}}>
+            {filtered.map(ch=>(
+              <div key={ch.id||ch.handle||ch.name} className="ch-card" style={{cursor:'pointer'}} onClick={()=>loadChannel(ch)}>
+                <div className="ch-avatar" style={{background:colorMap[ch.category]||'var(--dt-primary)',color:'white',fontSize:20}}>{ch.name[0]}</div>
+                <div className="ch-info">
+                  <div className="ch-name">{ch.name}</div>
+                  <span className="badge badge-gray" style={{fontSize:10,marginTop:4}}>{ch.category}</span>
+                  <div className="score-bar">
+                    <div className="score-track"><div className="score-fill" style={{width:`${ch.score*10}%`}}/></div>
+                    <div className="score-val">{ch.score}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {playingVideo&&<PlayerModal video={playingVideo} onClose={()=>setPlayingVideo(null)} onHistory={addHistory}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// FAVORITES PAGE
+// ═══════════════════════════════════════════════
+function FavoritesPage() {
+  const { favorites, toggleFavorite, addHistory } = useContext(AppContext);
+  const [playing, setPlaying] = useState(null);
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:24}}>
+        <div className="section-dot"/>
+        <div className="section-title">⭐ Favoritos</div>
+        <span className="badge badge-yellow">{favorites.length}</span>
+      </div>
+      {favorites.length===0?(
+        <div className="empty-state"><div className="empty-icon">☆</div><div className="empty-title">No hay favoritos</div><div className="empty-sub">Marca videos con ★ para guardarlos aquí</div></div>
+      ):(
+        <div className="vid-grid">
+          {favorites.map((v,i)=>(
+            <VideoCard key={i} video={v} onClick={()=>setPlaying(v)} isFavorite={true} onToggleFavorite={toggleFavorite}/>
+          ))}
+        </div>
+      )}
+      {playing&&<PlayerModal video={playing} onClose={()=>setPlaying(null)} onHistory={addHistory}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// SHORTS PAGE
+// ═══════════════════════════════════════════════
+function ShortsPage() {
+  const { whitelist, config, addHistory } = useContext(AppContext);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [playing, setPlaying] = useState(null);
+  const shortChannels = whitelist.filter(ch=>ch.enabled&&ch.shorts);
+
+  useEffect(()=>{
+    if(!shortChannels.length){setLoading(false);return;}
+    const key = config.youtubeApiKey||apiKeyStore.get();
+    if(!key||key===YOUTUBE_API_KEY_PLACEHOLDER){
+      setVideos(shortChannels.flatMap(ch=>mockVideos(ch,4).map(v=>({...v,_isShort:true})))); setLoading(false); return;
+    }
+    Promise.all(shortChannels.map(ch=>ytAPI.getVideos(ch.id,key,6))).then(results=>{
+      setVideos(results.flatMap((r,i)=>r?.videos?.map(v=>({...v,_channelName:shortChannels[i].name}))||[]));
+      setLoading(false);
+    });
+  },[shortChannels.length]);
+
+  if(!config.shortsEnabled) return <div className="dt-page"><div className="empty-state"><div className="empty-icon">🚫</div><div className="empty-title">Shorts deshabilitados</div></div></div>;
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:24}}>
+        <div className="section-dot"/>
+        <div className="section-title">⚡ Shorts</div>
+        <span className="badge badge-red">Solo canales aprobados</span>
+      </div>
+      {loading?<VideoSkeleton count={8}/>:videos.length===0?(
+        <div className="empty-state"><div className="empty-icon">⚡</div><div className="empty-title">No hay Shorts</div></div>
+      ):(
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:14}}>
+          {videos.map((v,i)=>(
+            <div key={i} style={{cursor:'pointer'}} onClick={()=>setPlaying(v)} className="vid-card">
+              <div style={{aspectRatio:'9/16',borderRadius:12,overflow:'hidden',background:'var(--dt-bg3)',position:'relative'}}>
+                <img src={v.snippet?.thumbnails?.medium?.url} alt="" style={{width:'100%',height:'100%',objectFit:'cover'}}/>
+                <div style={{position:'absolute',bottom:8,left:8,right:8}}>
+                  <div style={{fontSize:11,fontWeight:600,lineHeight:1.3,textShadow:'0 1px 3px rgba(0,0,0,0.9)'}}>{v.snippet?.title?.slice(0,50)}</div>
+                </div>
+              </div>
+              <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:6,textAlign:'center'}}>{v.snippet?.channelTitle}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {playing&&<PlayerModal video={playing} onClose={()=>setPlaying(null)} onHistory={addHistory}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// HISTORY PAGE
+// ═══════════════════════════════════════════════
+function HistoryPage() {
+  const { history, clearHistory, addHistory } = useContext(AppContext);
+  const [search, setSearch] = useState('');
+  const [playing, setPlaying] = useState(null);
+
+  const filtered = history.filter(h=>!search||h.title?.toLowerCase().includes(search.toLowerCase())||h.channel?.toLowerCase().includes(search.toLowerCase()));
+  const grouped = useMemo(()=>{
+    const g={};
+    filtered.forEach(h=>{ const d=new Date(h.watchedAt).toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}); if(!g[d])g[d]=[]; g[d].push(h); });
+    return g;
+  },[filtered]);
+
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:20}}>
+        <div className="section-dot"/>
+        <div className="section-title">🕐 Historial</div>
+        <div style={{marginLeft:'auto',display:'flex',gap:10}}>
+          <input className="form-control" style={{width:220,height:38}} placeholder="Buscar en historial..." value={search} onChange={e=>setSearch(e.target.value)}/>
+          {history.length>0&&<button className="btn btn-danger btn-sm" onClick={clearHistory}>Borrar todo</button>}
+        </div>
+      </div>
+      {history.length===0?(
+        <div className="empty-state"><div className="empty-icon">🕐</div><div className="empty-title">Sin historial</div><div className="empty-sub">Los videos que veas aparecerán aquí</div></div>
+      ):(
+        Object.entries(grouped).map(([date,items])=>(
+          <div key={date} style={{marginBottom:28}}>
+            <div style={{fontSize:12,fontWeight:700,letterSpacing:1,textTransform:'uppercase',color:'var(--dt-text3)',marginBottom:12}}>{date}</div>
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              {items.map((h,i)=>(
+                <div key={i} className="dt-card" style={{display:'flex',alignItems:'center',gap:14,padding:'12px 16px',cursor:'pointer'}}
+                  onClick={()=>setPlaying({id:{videoId:h.videoId},snippet:{title:h.title,channelTitle:h.channel,thumbnails:{medium:{url:h.thumb}}}})}>
+                  <img src={h.thumb} style={{width:80,height:45,objectFit:'cover',borderRadius:6,flexShrink:0,background:'var(--dt-bg3)'}} onError={e=>{e.target.style.display='none';}}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:14,fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{h.title}</div>
+                    <div style={{fontSize:12,color:'var(--dt-text3)',marginTop:3}}>{h.channel} · {new Date(h.watchedAt).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</div>
+                  </div>
+                  {h.count>1&&<span className="badge badge-blue">×{h.count}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+      {playing&&<PlayerModal video={playing} onClose={()=>setPlaying(null)} onHistory={()=>{}}/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// API KEY PAGE — independent of admin
+// ═══════════════════════════════════════════════
+function ApiPage() {
+  const { config, setConfig, showToast, whitelist, setWhitelist } = useContext(AppContext);
+  const [inputKey, setInputKey] = useState(()=>apiKeyStore.get()||'');
+  const [show, setShow] = useState(false);
+  const [validating, setValidating] = useState(false);
+  const [status, setStatus] = useState(()=>{
+    const k=apiKeyStore.get();
+    return (k&&k!==YOUTUBE_API_KEY_PLACEHOLDER)?'saved':'empty';
+  });
+  const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState({done:0,total:0,errors:0});
+
+  const sanitize=(s)=>s.replace(/[<>"'`]/g,'').trim();
+
+  const importPresetChannels=async(apiKey)=>{
+    setImporting(true);
+    const source=DEFAULT_WHITELIST.filter(ch=>ch.handle);
+    setImportProgress({done:0,total:source.length,errors:0});
+    const resolved=[];
+    let errors=0;
+    for(let i=0;i<source.length;i++){
+      const preset=source[i];
+      const result=await ytAPI.resolveChannel(preset.handle,apiKey);
+      if(result&&result.id){
+        resolved.push({
+          id:result.id,
+          handle:preset.handle,
+          name:result.name||preset.name,
+          category:preset.category,
+          score:preset.score,
+          priority:preset.priority,
+          enabled:true,
+          shorts:preset.shorts,
+          description:'',
+          thumbnail:result.thumbnail||'',
+        });
+      } else { errors++; }
+      setImportProgress({done:i+1,total:source.length,errors});
+    }
+    setWhitelist(prev=>{
+      // Build map of resolved channels by id
+      const resolvedById=new Map(resolved.map(c=>[c.id,c]));
+      // Build map of resolved channels by handle (for updating handle-only entries)
+      const resolvedByHandle=new Map(resolved.map(c=>[c.handle?.toLowerCase(),(c)]));
+      return prev.map(c=>{
+        // Already has a valid UC id → keep as-is (don't overwrite with re-import)
+        if(c.id&&/^UC[\w-]{20,}$/.test(c.id)) return c;
+        // Try to match by handle
+        const r=resolvedByHandle.get((c.handle||'').toLowerCase());
+        if(r) return {...c,id:r.id,name:r.name||c.name,thumbnail:r.thumbnail||c.thumbnail};
+        return c;
+      });
+    });
+    setImporting(false);
+    showToast(`\u2713 ${resolved.length} canales importados${errors?` (${errors} no encontrados)`:''}`, resolved.length>0?'success':'error');
+  };
+
+  const validate=async()=>{
+    const k=sanitize(inputKey);
+    if(!k){ showToast('Ingresá una API Key','error'); return; }
+    setValidating(true); setStatus('validating');
+    const result=await ytAPI.validateKey(k);
+    setValidating(false);
+    if(result.valid){
+      apiKeyStore.set(k);
+      setConfig(prev=>({...prev,youtubeApiKey:k}));
+      setStatus('valid');
+      showToast('\u2713 API Key válida — importando canales...','success');
+      await importPresetChannels(k);
+    } else {
+      setStatus('invalid');
+      showToast(`API Key inválida: ${result.message}`,'error');
+    }
+  };
+
+  const clear=()=>{
+    setInputKey(''); apiKeyStore.del();
+    setConfig(prev=>({...prev,youtubeApiKey:''}));
+    setStatus('empty');
+    showToast('API Key eliminada. Modo demo activo.','info');
+  };
+
+  const statusBanners={
+    valid:{ bg:'rgba(70,211,105,0.1)', border:'rgba(70,211,105,0.3)', color:'var(--dt-success)', text:'✓ API Key válida — Videos cargando desde YouTube', dot:'ok' },
+    saved:{ bg:'rgba(70,211,105,0.1)', border:'rgba(70,211,105,0.3)', color:'var(--dt-success)', text:'✓ API Key configurada — Revalidá si dejó de funcionar', dot:'ok' },
+    invalid:{ bg:'rgba(229,9,20,0.1)', border:'rgba(229,9,20,0.3)', color:'#FF6B6B', text:'✗ API Key inválida — Verificá que esté bien escrita y que YT Data API v3 esté habilitada', dot:'bad' },
+    validating:{ bg:'rgba(59,130,246,0.1)', border:'rgba(59,130,246,0.3)', color:'var(--dt-info)', text:'⏳ Validando con YouTube...', dot:'unknown' },
+    empty: null,
+  };
+  const banner=statusBanners[status];
+
+  return (
+    <div className="dt-page api-section">
+      <div className="section-header" style={{marginBottom:28}}>
+        <div className="section-dot"/>
+        <div className="section-title">🔑 Conexión YouTube</div>
+        {banner&&<div style={{display:'flex',alignItems:'center',gap:6,fontSize:13,color:banner.color}}><span className={`api-dot api-dot-${banner.dot}`}/>{status==='valid'||status==='saved'?'Conectada':'Sin conexión'}</div>}
+      </div>
+
+      <div style={{maxWidth:640}}>
+        <div style={{background:'rgba(59,130,246,0.08)',border:'1px solid rgba(59,130,246,0.2)',borderRadius:12,padding:'18px 20px',marginBottom:28}}>
+          <div style={{fontWeight:600,marginBottom:10,color:'var(--dt-info)'}}>📌 Cómo obtener tu API Key de YouTube</div>
+          <ol style={{fontSize:13,color:'var(--dt-text2)',lineHeight:2.2,paddingLeft:18}}>
+            <li>Ve a <a href="https://console.cloud.google.com" target="_blank" style={{color:'var(--dt-info)'}}>Google Cloud Console</a></li>
+            <li>Crea un proyecto nuevo</li>
+            <li>Habilita "YouTube Data API v3"</li>
+            <li>Ve a Credenciales → Crear credencial → API Key</li>
+            <li>Copia la key y pégala abajo</li>
+          </ol>
+          <div style={{marginTop:8,padding:'8px 12px',background:'rgba(251,146,60,0.1)',border:'1px solid rgba(251,146,60,0.2)',borderRadius:8,fontSize:12,color:'var(--dt-warning)'}}>
+            ⚠️ La cuota gratuita es de 10.000 unidades/día. La app la usa de forma eficiente.
+          </div>
+        </div>
+
+        <div className="dt-card">
+          <div className="dt-card-header">
+            <div className="dt-card-title">YouTube Data API v3 Key</div>
+          </div>
+          <div className="dt-card-body">
+            <div className="form-group">
+              <label className="form-label">Tu API Key</label>
+              <div style={{display:'flex',gap:8}}>
+                <div className="pw-wrap" style={{flex:1}}>
+                  <input
+                    className="form-control"
+                    type={show?'text':'password'}
+                    placeholder="AIzaSy..."
+                    value={inputKey}
+                    onChange={e=>{setInputKey(e.target.value);if(status==='valid'||status==='invalid')setStatus('empty');}}
+                    autoComplete="off"
+                  />
+                  <button className="pw-toggle" onClick={()=>setShow(s=>!s)}>{show?'🙈':'👁'}</button>
+                </div>
+                <button className="btn btn-primary" onClick={validate} disabled={validating||importing} style={{whiteSpace:'nowrap'}}>
+                  {validating?'⏳ Validando...':importing?'⏳ Importando...':' ✓ Validar y Guardar'}
+                </button>
+                {apiKeyStore.get()&&<button className="btn btn-danger" onClick={clear} title="Eliminar key">✕</button>}
+              </div>
+              <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:6}}>Sin API Key la app funciona en modo demo con datos de muestra.</div>
+            </div>
+            {banner&&(
+              <div style={{background:banner.bg,border:`1px solid ${banner.border}`,borderRadius:8,padding:'10px 16px',fontSize:13,color:banner.color,display:'flex',alignItems:'center',gap:8}}>
+                <span className={`api-dot api-dot-${banner.dot}`}/>
+                {banner.text}
+              </div>
+            )}
+            {importing&&(
+              <div style={{marginTop:16,background:'rgba(59,130,246,0.08)',border:'1px solid rgba(59,130,246,0.25)',borderRadius:10,padding:'14px 18px'}}>
+                <div style={{fontWeight:600,fontSize:13,color:'var(--dt-info)',marginBottom:10}}>
+                  ⏳ Importando canales preconfigurados... {importProgress.done}/{importProgress.total}
+                </div>
+                <div style={{height:6,background:'var(--dt-bg4)',borderRadius:3,overflow:'hidden',marginBottom:8}}>
+                  <div style={{height:'100%',background:'var(--dt-info)',borderRadius:3,transition:'width 0.3s ease',width:`${importProgress.total?Math.round(importProgress.done/importProgress.total*100):0}%`}}/>
+                </div>
+                <div style={{fontSize:12,color:'var(--dt-text3)'}}>
+                  {importProgress.done} resueltos{importProgress.errors>0?` · ${importProgress.errors} errores`:''} — Este proceso puede tardar unos segundos
+                </div>
+              </div>
+            )}
+            {!importing&&(status==='valid'||status==='saved')&&whitelist.some(c=>!['UCVHFbw7woebKtHnopGmQFZg','UCbmNph6atAoGfqLoCL_duAg','UCZdQjaSoLjIzFnWsDQOv4ww','UCsXVk37bltHxD1rDPwtNM8Q','UCnUYZLuoy1rq1aVMwx4aTzw'].includes(c.id))&&(
+              <div style={{marginTop:12,background:'rgba(70,211,105,0.08)',border:'1px solid rgba(70,211,105,0.25)',borderRadius:10,padding:'12px 16px',fontSize:13,color:'var(--dt-success)'}}>
+                ✅ {whitelist.length} canales en la lista — los preconfigurados ya están cargados
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="dt-card" style={{marginTop:20}}>
+          <div className="dt-card-header">
+            <div className="dt-card-title">📺 {DEFAULT_WHITELIST.length} Canales Preconfigurados</div>
+          </div>
+          <div className="dt-card-body">
+            <div style={{fontSize:13,color:'var(--dt-text2)',marginBottom:12}}>
+              Al validar tu API Key, estos canales se añaden automáticamente a tu lista. Podés habilitarlos/deshabilitarlos desde el Panel Admin.
+            </div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+              {PRESET_CHANNELS.map(ch=>(
+                <span key={ch.handle} style={{padding:'4px 10px',background:'var(--dt-bg3)',border:'1px solid var(--dt-border)',borderRadius:999,fontSize:12,color:'var(--dt-text2)'}}>
+                  {ch.name}
+                </span>
+              ))}
+            </div>
+            {(status==='valid'||status==='saved')&&!importing&&(
+              <button
+                className="btn btn-secondary"
+                style={{marginTop:14}}
+                onClick={()=>importPresetChannels(apiKeyStore.get())}
+              >
+                🔄 Resolver todos los canales ({whitelist.filter(ch=>!ch.id||!/^UC[\w-]{20,}$/.test(ch.id)).length} sin ID)
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// CUSTOMIZE PAGE (deep customization — no admin needed)
+// ═══════════════════════════════════════════════
+function CustomizePage() {
+  const { config, setConfig, showToast } = useContext(AppContext);
+  const [activeTab, setActiveTab] = useState('perfiles');
+  const update=(k,v)=>setConfig(prev=>({...prev,[k]:v}));
+
+  const applyProfile=(p)=>{
+    setConfig(prev=>({
+      ...prev,
+      theme: p.theme||prev.theme,
+      primaryColor: p.primaryColor||prev.primaryColor,
+      bgColor: p.bgColor||prev.bgColor,
+      cardColor: p.cardColor||prev.cardColor,
+      glowEffects: p.glowEffects!==undefined?p.glowEffects:prev.glowEffects,
+      shadowEffects: p.shadowEffects!==undefined?p.shadowEffects:prev.shadowEffects,
+      fontFamily: p.fontFamily||prev.fontFamily,
+      feedLayout: p.feedLayout||prev.feedLayout,
+      kidsMode: p.kidsMode||false,
+    }));
+    showToast(`Perfil "${p.name}" aplicado ✓`,'success');
+  };
+
+  const exportProfile=()=>{
+    const blob=new Blob([JSON.stringify({...config,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='delfitube-perfil.json'; a.click();
+    showToast('Perfil exportado','success');
+  };
+
+  const importProfile=(e)=>{
+    const file=e.target.files[0]; if(!file) return;
+    const r=new FileReader();
+    r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); setConfig(prev=>({...prev,...d})); showToast('Perfil importado','success'); } catch{ showToast('Archivo inválido','error'); } };
+    r.readAsText(file);
+  };
+
+  const resetAll=()=>{
+    setConfig(DEFAULT_CONFIG);
+    showToast('Configuración restablecida','success');
+  };
+
+  const fonts=['DM Sans','Inter','Poppins','Nunito','Orbitron','Bebas Neue','Georgia','Trebuchet MS','Verdana','Courier New'];
+  const themes=[
+    {id:'dark',label:'Oscuro'},
+    {id:'light',label:'Claro'},
+    {id:'oled',label:'OLED Negro'},
+    {id:'netflix',label:'Netflix'},
+    {id:'synthwave',label:'Synthwave'},
+    {id:'vaporwave',label:'Vaporwave'},
+    {id:'minimal',label:'Minimal'},
+    {id:'glassmorphism',label:'Glassmorphism'},
+    {id:'retro',label:'Retro'},
+    {id:'cyberpunk',label:'Cyberpunk'},
+    {id:'kids',label:'Infantil 🧒'},
+  ];
+  const layouts=[{id:'grid',l:'Grilla'},{id:'list',l:'Lista'},{id:'compact',l:'Compacto'},{id:'cinematic',l:'Cinemático'}];
+
+  const tabs=[
+    {id:'perfiles',label:'🎭 Perfiles'},
+    {id:'temas',label:'🎨 Tema'},
+    {id:'colores',label:'🖌 Colores'},
+    {id:'layout',label:'🧩 Layout'},
+    {id:'fuente',label:'🔠 Tipografía'},
+    {id:'efectos',label:'✨ Efectos'},
+    {id:'fondo',label:'🖼 Fondo'},
+    {id:'datos',label:'💾 Datos'},
+  ];
+
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:28}}>
+        <div className="section-dot"/>
+        <div className="section-title">🎨 Personalización</div>
+      </div>
+      <div className="dt-tabs">
+        {tabs.map(t=><div key={t.id} className={`dt-tab ${activeTab===t.id?'active':''}`} onClick={()=>setActiveTab(t.id)}>{t.label}</div>)}
+      </div>
+
+      {activeTab==='perfiles'&&(
+        <div>
+          <div style={{marginBottom:20,fontSize:14,color:'var(--dt-text2)'}}>Aplica un estilo completo con un clic. Podés personalizar cada detalle después.</div>
+          <div className="profile-grid" style={{marginBottom:28}}>
+            {VISUAL_PROFILES.map(p=>(
+              <div key={p.id} className="profile-card" onClick={()=>applyProfile(p)}>
+                <div style={{fontSize:36,marginBottom:8}}>{p.icon}</div>
+                <div style={{fontWeight:600,fontSize:14}}>{p.name}</div>
+                <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:4}}>{p.theme}</div>
+                <div style={{width:24,height:6,borderRadius:3,background:p.primaryColor,margin:'8px auto 0'}}/>
+              </div>
+            ))}
+          </div>
+          <hr className="divider"/>
+          <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+            <button className="btn btn-secondary" onClick={exportProfile}>📤 Exportar perfil JSON</button>
+            <label className="btn btn-secondary" style={{cursor:'pointer'}}>📥 Importar perfil JSON<input type="file" accept=".json" onChange={importProfile} style={{display:'none'}}/></label>
+            <button className="btn btn-danger" onClick={resetAll}>↩ Restablecer todo</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='temas'&&(
+        <div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))',gap:12,maxWidth:700,marginBottom:24}}>
+            {themes.map(t=>(
+              <div key={t.id} className={`profile-card ${config.theme===t.id?'active':''}`} onClick={()=>{update('theme',t.id);showToast(`Tema ${t.label} aplicado`,'success');}}>
+                <div style={{fontSize:14,fontWeight:600}}>{t.label}</div>
+              </div>
+            ))}
+          </div>
+          <div className="form-group" style={{maxWidth:300}}>
+            <label className="form-label">Nombre de la App</label>
+            <input className="form-control" value={config.appName} onChange={e=>update('appName',e.target.value)}/>
+          </div>
+          <div className="form-group" style={{maxWidth:200}}>
+            <label className="form-label">Emoji / Ícono</label>
+            <input className="form-control" value={config.logoEmoji} onChange={e=>update('logoEmoji',e.target.value)} maxLength={4}/>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='colores'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,maxWidth:640}}>
+          {[
+            {label:'Color Principal',key:'primaryColor'},
+            {label:'Color Secundario',key:'secondaryColor'},
+            {label:'Color Acento',key:'accentColor'},
+            {label:'Fondo',key:'bgColor'},
+            {label:'Fondo Sidebar',key:'sidebarColor'},
+            {label:'Tarjetas',key:'cardColor'},
+            {label:'Texto',key:'textColor'},
+          ].map(c=>(
+            <div key={c.key} className="form-group">
+              <label className="form-label">{c.label}</label>
+              <div className="color-row">
+                <input type="color" value={config[c.key]||'#000000'} onChange={e=>update(c.key,e.target.value)} style={{width:44,height:36,border:'1px solid var(--dt-border2)',borderRadius:6,cursor:'pointer',background:'transparent',padding:2}}/>
+                <input className="form-control" value={config[c.key]||''} onChange={e=>update(c.key,e.target.value)} style={{fontFamily:'monospace',fontSize:13}}/>
+              </div>
+            </div>
+          ))}
+          <div style={{gridColumn:'1/-1'}}>
+            <button className="btn btn-secondary btn-sm" onClick={()=>{
+              ['primaryColor','secondaryColor','accentColor','bgColor','sidebarColor','cardColor','textColor'].forEach(k=>update(k,DEFAULT_CONFIG[k]));
+              showToast('Colores restaurados','success');
+            }}>↩ Restaurar colores</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='layout'&&(
+        <div style={{maxWidth:600}}>
+          <div className="form-group">
+            <label className="form-label">Diseño del Feed</label>
+            <div style={{display:'flex',gap:10,flexWrap:'wrap'}}>
+              {layouts.map(l=>(
+                <button key={l.id} className={`btn ${config.feedLayout===l.id?'btn-primary':'btn-secondary'}`} onClick={()=>update('feedLayout',l.id)}>{l.l}</button>
+              ))}
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Tamaño de Miniaturas: {config.thumbSize}px</label>
+            <input type="range" className="form-range" min={120} max={400} step={20} value={config.thumbSize} onChange={e=>update('thumbSize',e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Radio de Bordes: {config.borderRadius}px</label>
+            <input type="range" className="form-range" min={0} max={32} value={config.borderRadius} onChange={e=>update('borderRadius',e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Zoom de UI: {config.zoomUI}x</label>
+            <input type="range" className="form-range" min={0.8} max={1.4} step={0.05} value={config.zoomUI} onChange={e=>update('zoomUI',e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Modo Compacto</label>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <Toggle checked={config.compactMode} onChange={v=>update('compactMode',v)}/>
+              <span style={{fontSize:13}}>Reducir espaciado general</span>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Modo Infantil 🧒</label>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <Toggle checked={config.kidsMode} onChange={v=>update('kidsMode',v)}/>
+              <span style={{fontSize:13}}>UI simplificada, botones grandes, colores amigables</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='fuente'&&(
+        <div style={{maxWidth:600}}>
+          <div className="form-group">
+            <label className="form-label">Familia de Fuente</label>
+            <select className="form-select" value={config.fontFamily} onChange={e=>update('fontFamily',e.target.value)}>
+              {fonts.map(f=><option key={f}>{f}</option>)}
+            </select>
+            <div style={{marginTop:10,padding:'12px 16px',background:'var(--dt-bg3)',borderRadius:8,fontSize:18,fontFamily:`'${config.fontFamily}',sans-serif`}}>
+              LuzTube — Vista previa de la fuente
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Tamaño base: {config.fontSize}px</label>
+            <input type="range" className="form-range" min={12} max={20} value={config.fontSize} onChange={e=>update('fontSize',e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Espaciado de letras: {config.letterSpacing}px</label>
+            <input type="range" className="form-range" min={-1} max={4} step={0.1} value={config.letterSpacing} onChange={e=>update('letterSpacing',e.target.value)}/>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='efectos'&&(
+        <div style={{maxWidth:500}}>
+          {[
+            {label:'Animaciones', sub:'Transiciones y efectos de movimiento', key:'animationsEnabled'},
+            {label:'Efectos Glow', sub:'Brillo en elementos activos y hover', key:'glowEffects'},
+            {label:'Sombras', sub:'Box shadows en tarjetas y modales', key:'shadowEffects'},
+            {label:'UI Redondeada', sub:'Bordes más curvos en toda la app', key:'roundedUI'},
+            {label:'Modo Shorts activo', sub:'Sección de Shorts en el menú', key:'shortsEnabled'},
+            {label:'Autoplay', sub:'Reproducción automática', key:'autoplay'},
+            {label:'Siguiente automático', sub:'Sugerir siguiente video', key:'nextAutoplay'},
+          ].map(opt=>(
+            <div key={opt.key} className="dt-card" style={{marginBottom:10}}>
+              <div style={{display:'flex',alignItems:'center',padding:'14px 20px',gap:16}}>
+                <Toggle checked={!!config[opt.key]} onChange={v=>update(opt.key,v)}/>
+                <div>
+                  <div style={{fontWeight:500,fontSize:14}}>{opt.label}</div>
+                  <div style={{fontSize:12,color:'var(--dt-text3)'}}>{opt.sub}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="form-group" style={{marginTop:16}}>
+            <label className="form-label">Intensidad de Blur (glassmorphism): {config.backgroundBlur}px</label>
+            <input type="range" className="form-range" min={0} max={32} step={2} value={config.backgroundBlur} onChange={e=>update('backgroundBlur',e.target.value)}/>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='fondo'&&(
+        <div style={{maxWidth:560}}>
+          <div className="form-group">
+            <label className="form-label">URL de imagen de fondo (opcional)</label>
+            <input className="form-control" placeholder="https://ejemplo.com/imagen.jpg" value={config.backgroundImage||''} onChange={e=>update('backgroundImage',e.target.value)}/>
+            <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:4}}>Usa una URL de imagen. Se aplicará como fondo de toda la app.</div>
+          </div>
+          {config.backgroundImage&&(
+            <div style={{marginBottom:16}}>
+              <img src={config.backgroundImage} alt="preview" style={{width:'100%',maxHeight:180,objectFit:'cover',borderRadius:10,border:'1px solid var(--dt-border2)'}} onError={e=>{e.target.style.display='none';}}/>
+            </div>
+          )}
+          <div className="form-group">
+            <label className="form-label">Fondo degradado</label>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <Toggle checked={!!config.gradientBg} onChange={v=>update('gradientBg',v)}/>
+              <span style={{fontSize:13}}>Degradado animado como fondo</span>
+            </div>
+          </div>
+          {config.backgroundImage&&(
+            <button className="btn btn-danger btn-sm" onClick={()=>update('backgroundImage','')}>✕ Quitar imagen de fondo</button>
+          )}
+        </div>
+      )}
+
+      {activeTab==='datos'&&(
+        <div style={{maxWidth:500}}>
+          <div className="dt-card">
+            <div className="dt-card-header"><div className="dt-card-title">Exportar / Importar configuración</div></div>
+            <div className="dt-card-body" style={{display:'flex',flexDirection:'column',gap:12}}>
+              <button className="btn btn-secondary" onClick={exportProfile}>📤 Exportar perfil visual (JSON)</button>
+              <label className="btn btn-secondary" style={{cursor:'pointer'}}>📥 Importar perfil visual<input type="file" accept=".json" onChange={importProfile} style={{display:'none'}}/></label>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN LOGIN — no session persistence, brute force protection
+// ═══════════════════════════════════════════════
+function AdminLogin({ onLogin }) {
+  const [pw, setPw] = useState('');
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0);
+  const [lockUntil, setLockUntil] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(()=>{
+    if (!lockUntil) return;
+    const iv = setInterval(()=>{
+      const rem = Math.ceil((lockUntil-Date.now())/1000);
+      if (rem<=0){ setLockUntil(null); setAttempts(0); setCountdown(0); clearInterval(iv); }
+      else setCountdown(rem);
+    },500);
+    return()=>clearInterval(iv);
+  },[lockUntil]);
+
+  const attempt=()=>{
+    if (lockUntil&&Date.now()<lockUntil) return;
+    const sanitized = pw.replace(/[<>"'`]/g,'').trim();
+    if (sanitized===auth.getPassword()) {
+      onLogin(); setError(''); setAttempts(0);
+    } else {
+      const newAttempts=attempts+1;
+      setAttempts(newAttempts);
+      setPw('');
+      if (newAttempts>=MAX_LOGIN_ATTEMPTS) {
+        const until=Date.now()+LOCKOUT_SECONDS*1000;
+        setLockUntil(until); setCountdown(LOCKOUT_SECONDS);
+        setError('');
+      } else {
+        setError(`Contraseña incorrecta. Intento ${newAttempts}/${MAX_LOGIN_ATTEMPTS}.`);
+      }
+    }
+  };
+
+  const isLocked = lockUntil&&Date.now()<lockUntil;
+
+  return (
+    <div className="login-screen">
+      <div className="login-card">
+        <div style={{fontSize:48,marginBottom:12}}>🔐</div>
+        <div style={{fontFamily:'var(--dt-font-display)',fontSize:32,color:'var(--dt-primary)',marginBottom:6}}>PANEL ADMIN</div>
+        <div style={{fontSize:14,color:'var(--dt-text3)',marginBottom:24}}>Acceso restringido · LuzTube</div>
+
+        {isLocked&&(
+          <div className="lockout-bar">
+            🔒 Demasiados intentos fallidos. Espera {countdown} segundos.
+            <div style={{marginTop:6,height:4,background:'var(--dt-bg4)',borderRadius:2}}>
+              <div style={{height:'100%',background:'var(--dt-warning)',borderRadius:2,transition:'width 1s linear',width:`${(countdown/LOCKOUT_SECONDS)*100}%`}}/>
+            </div>
+          </div>
+        )}
+
+        <div className="form-group pw-wrap" style={{marginBottom:8}}>
+          <input
+            className="form-control"
+            type={show?'text':'password'}
+            placeholder="Contraseña de administrador"
+            value={pw}
+            onChange={e=>{setPw(e.target.value);setError('');}}
+            onKeyDown={e=>{if(e.key==='Enter')attempt();}}
+            autoComplete="off"
+            disabled={isLocked}
+            style={{paddingRight:44}}
+          />
+          <button className="pw-toggle" onClick={()=>setShow(s=>!s)} disabled={isLocked}>{show?'🙈':'👁'}</button>
+        </div>
+        {error&&<div style={{color:'var(--dt-primary)',fontSize:13,marginBottom:12,textAlign:'left'}}>{error}</div>}
+        <button className="btn btn-primary w-full" onClick={attempt} disabled={isLocked}>
+          {isLocked?`Bloqueado (${countdown}s)`:'Acceder al Panel'}
+        </button>
+        <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:16}}>La sesión no persiste al cerrar la app.</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN WHITELIST
+// ═══════════════════════════════════════════════
+function AdminWhitelist() {
+  const { whitelist, setWhitelist, showToast, config } = useContext(AppContext);
+  const [search, setSearch] = useState('');
+  const [editCh, setEditCh] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newCh, setNewCh] = useState({id:'',name:'',category:'Educación',score:5,priority:3,enabled:true,shorts:false,description:''});
+  const [handleInput, setHandleInput] = useState('');
+  const [resolving, setResolving] = useState(false);
+  const [resolveError, setResolveError] = useState('');
+
+  const filteredList = whitelist.filter(ch=>!search||ch.name.toLowerCase().includes(search.toLowerCase())||ch.category.toLowerCase().includes(search.toLowerCase()));
+
+  const resolveHandle=async()=>{
+    if(!handleInput.trim()) return;
+    const apiKey=apiKeyStore.get();
+    if(!apiKey){
+      if(/^UC[\w-]{20,}$/.test(handleInput.trim())){ setNewCh(prev=>({...prev,id:handleInput.trim()})); setResolveError(''); showToast('ID cargado. Completa el nombre manualmente.','info'); }
+      else setResolveError('Sin API Key, ingresá el ID directo (UCxxxxxxx...).');
+      return;
+    }
+    setResolving(true); setResolveError('');
+    const result=await ytAPI.resolveChannel(handleInput.trim(),apiKey);
+    setResolving(false);
+    if(!result){setResolveError('Canal no encontrado.');return;}
+    if(result.error){setResolveError(`Error: ${result.error}`);return;}
+    if(whitelist.find(c=>c.id===result.id)){setResolveError('Canal ya en la whitelist.');return;}
+    setNewCh(prev=>({...prev,id:result.id,name:result.name,thumbnail:result.thumbnail||''}));
+    setResolveError(''); showToast(`Canal encontrado: ${result.name}`,'success');
+  };
+
+  const addChannel=()=>{
+    if(!newCh.id||!newCh.name){showToast('Completa ID y nombre','error');return;}
+    if(whitelist.find(c=>c.id===newCh.id)){showToast('Canal ya existe','error');return;}
+    setWhitelist([...whitelist,{...newCh}]);
+    setNewCh({id:'',name:'',category:'Educación',score:5,priority:3,enabled:true,shorts:false,description:''});
+    setHandleInput(''); setShowAdd(false);
+    showToast('Canal añadido','success');
+  };
+
+  const ChannelForm=({data,onChange,isEdit=false})=>(
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+      {!isEdit&&(
+        <div className="form-group" style={{gridColumn:'1/-1'}}>
+          <label className="form-label">🔍 Buscar por @handle o ID</label>
+          <div style={{display:'flex',gap:8}}>
+            <input className="form-control" placeholder="@handle o UCxxxxxxxxxxxxxxx" value={handleInput}
+              onChange={e=>{setHandleInput(e.target.value);setResolveError('');}}
+              onKeyDown={e=>{if(e.key==='Enter')resolveHandle();}} style={{flex:1}}/>
+            <button className="btn btn-secondary" onClick={resolveHandle} disabled={resolving}>
+              {resolving?'⏳':'🔎 Resolver'}
+            </button>
+          </div>
+          {resolveError&&<div style={{fontSize:12,color:'#EF4444',marginTop:6}}>{resolveError}</div>}
+          {data.id&&<div style={{fontSize:11,color:'var(--dt-success)',marginTop:4}}>✓ ID: {data.id}</div>}
+        </div>
+      )}
+      {isEdit&&<div className="form-group" style={{gridColumn:'1/-1'}}><label className="form-label">ID del Canal</label><input className="form-control" value={data.id} disabled style={{opacity:0.6,fontFamily:'monospace',fontSize:12}}/></div>}
+      <div className="form-group"><label className="form-label">Nombre</label><input className="form-control" placeholder="Nombre del canal" value={data.name} onChange={e=>onChange({...data,name:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Categoría</label><select className="form-select" value={data.category} onChange={e=>onChange({...data,category:e.target.value})}>{CATEGORIES.map(c=><option key={c}>{c}</option>)}</select></div>
+      <div className="form-group"><label className="form-label">Puntuación: {data.score}/10</label><input type="range" className="form-range" min={1} max={10} value={data.score} onChange={e=>onChange({...data,score:+e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Prioridad: {data.priority}</label><input type="range" className="form-range" min={1} max={5} value={data.priority} onChange={e=>onChange({...data,priority:+e.target.value})}/></div>
+      <div className="form-group" style={{gridColumn:'1/-1'}}><label className="form-label">Descripción</label><input className="form-control" placeholder="Descripción breve" value={data.description} onChange={e=>onChange({...data,description:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Estado</label><div style={{display:'flex',alignItems:'center',gap:10}}><Toggle checked={data.enabled} onChange={v=>onChange({...data,enabled:v})}/><span style={{fontSize:13}}>{data.enabled?'Activo':'Inactivo'}</span></div></div>
+      <div className="form-group"><label className="form-label">Shorts</label><div style={{display:'flex',alignItems:'center',gap:10}}><Toggle checked={data.shorts} onChange={v=>onChange({...data,shorts:v})}/><span style={{fontSize:13}}>{data.shorts?'Habilitados':'Deshabilitados'}</span></div></div>
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{display:'flex',gap:12,marginBottom:20,flexWrap:'wrap'}}>
+        <input className="form-control" style={{flex:1,minWidth:200,height:38}} placeholder="🔍 Buscar canales..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <button className="btn btn-primary" onClick={()=>{setShowAdd(true);setHandleInput('');setNewCh({id:'',name:'',category:'Educación',score:5,priority:3,enabled:true,shorts:false,description:''});setResolveError('');}}>+ Añadir Canal</button>
+      </div>
+      <div className="dt-card" style={{overflow:'auto'}}>
+        <table className="dt-table">
+          <thead><tr><th>Canal</th><th>Categoría</th><th>Score</th><th>Shorts</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            {filteredList.map(ch=>(
+              <tr key={ch.id||ch.handle||ch.name}>
+                <td>
+                  <div style={{display:'flex',alignItems:'center',gap:10}}>
+                    {ch.thumbnail?<img src={ch.thumbnail} style={{width:34,height:34,borderRadius:'50%',objectFit:'cover'}} onError={e=>{e.target.style.display='none';}}/>:<div className="ch-avatar" style={{width:34,height:34,fontSize:14,background:'var(--dt-primary)',color:'white'}}>{ch.name[0]}</div>}
+                    <div><div style={{fontWeight:600,fontSize:13}}>{ch.name}</div><div style={{fontSize:11,color:'var(--dt-text3)'}}>{ch.id?(ch.id.slice(0,20)+'…'):ch.handle||'Sin ID'}</div></div>
+                  </div>
+                </td>
+                <td><span className="badge badge-blue">{ch.category}</span></td>
+                <td><div style={{display:'flex',alignItems:'center',gap:6}}><div style={{width:60,height:4,background:'var(--dt-bg4)',borderRadius:2,overflow:'hidden'}}><div style={{width:`${ch.score*10}%`,height:'100%',background:'var(--dt-primary)'}}/></div><span style={{fontSize:12,fontWeight:600}}>{ch.score}</span></div></td>
+                <td><span className={`badge ${ch.shorts?'badge-green':'badge-gray'}`}>{ch.shorts?'Sí':'No'}</span></td>
+                <td><Toggle checked={ch.enabled} onChange={()=>setWhitelist(whitelist.map(c=>c.id===ch.id?{...c,enabled:!c.enabled}:c))}/></td>
+                <td><div style={{display:'flex',gap:6}}><button className="btn btn-ghost btn-sm" onClick={()=>setEditCh({...ch})}>✏️</button><button className="btn btn-danger btn-sm" onClick={()=>{setWhitelist(whitelist.filter(c=>c.id!==ch.id));showToast('Canal eliminado','success');}}>🗑️</button></div></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {filteredList.length===0&&<div style={{padding:32,textAlign:'center',color:'var(--dt-text3)'}}>No se encontraron canales</div>}
+      </div>
+      {showAdd&&(<div className="dt-overlay" onClick={e=>{if(e.target===e.currentTarget)setShowAdd(false);}}><div className="dt-modal"><div className="dt-modal-header"><div className="dt-modal-title">➕ Añadir Canal</div><button className="btn btn-ghost btn-sm" onClick={()=>setShowAdd(false)}>✕</button></div><div className="dt-modal-body"><ChannelForm data={newCh} onChange={setNewCh} isEdit={false}/></div><div className="dt-modal-footer"><button className="btn btn-secondary" onClick={()=>setShowAdd(false)}>Cancelar</button><button className="btn btn-primary" onClick={addChannel}>Añadir Canal</button></div></div></div>)}
+      {editCh&&(<div className="dt-overlay" onClick={e=>{if(e.target===e.currentTarget)setEditCh(null);}}><div className="dt-modal"><div className="dt-modal-header"><div className="dt-modal-title">✏️ Editar Canal</div><button className="btn btn-ghost btn-sm" onClick={()=>setEditCh(null)}>✕</button></div><div className="dt-modal-body"><ChannelForm data={editCh} onChange={setEditCh} isEdit={true}/></div><div className="dt-modal-footer"><button className="btn btn-secondary" onClick={()=>setEditCh(null)}>Cancelar</button><button className="btn btn-primary" onClick={()=>{setWhitelist(whitelist.map(c=>c.id===editCh.id?editCh:c));setEditCh(null);showToast('Canal actualizado','success');}}>Guardar</button></div></div></div>)}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN STATS
+// ═══════════════════════════════════════════════
+function AdminStats() {
+  const { history, whitelist } = useContext(AppContext);
+  const barRef=useRef(null), pieRef=useRef(null), lineRef=useRef(null);
+  const chartsRef=useRef({});
+
+  const totalViews=history.length;
+  const uniqueVideos=new Set(history.map(h=>h.videoId)).size;
+  const topChannel=history.length?Object.entries(history.reduce((acc,h)=>{acc[h.channel]=(acc[h.channel]||0)+1;return acc;},{})).sort((a,b)=>b[1]-a[1])[0]?.[0]:'N/A';
+  const channelCounts=history.reduce((acc,h)=>{acc[h.channel]=(acc[h.channel]||0)+1;return acc;},{});
+  const top5=Object.entries(channelCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const catCounts=whitelist.reduce((acc,ch)=>{acc[ch.category]=(acc[ch.category]||0)+1;return acc;},{});
+  const dayLabels=[],dayCounts=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);dayLabels.push(d.toLocaleDateString('es-AR',{weekday:'short'}));dayCounts.push(history.filter(h=>new Date(h.watchedAt).toDateString()===d.toDateString()).length);}
+
+  useEffect(()=>{
+    const tc='#B3B3B3',gc='rgba(255,255,255,0.06)';
+    if(barRef.current&&top5.length){if(chartsRef.current.bar)chartsRef.current.bar.destroy();chartsRef.current.bar=new Chart(barRef.current,{type:'bar',data:{labels:top5.map(x=>x[0]),datasets:[{data:top5.map(x=>x[1]),backgroundColor:'#E50914',borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{display:false}},y:{ticks:{color:tc},grid:{color:gc}}}}});}
+    if(pieRef.current&&Object.keys(catCounts).length){if(chartsRef.current.pie)chartsRef.current.pie.destroy();const colors=['#E50914','#3B82F6','#46D369','#FFD700','#FF6B35','#A855F7','#F97316'];chartsRef.current.pie=new Chart(pieRef.current,{type:'doughnut',data:{labels:Object.keys(catCounts),datasets:[{data:Object.values(catCounts),backgroundColor:colors,borderWidth:2,borderColor:'#1A1A1A'}]},options:{responsive:true,plugins:{legend:{labels:{color:tc,font:{size:12}}}}}});}
+    if(lineRef.current){if(chartsRef.current.line)chartsRef.current.line.destroy();chartsRef.current.line=new Chart(lineRef.current,{type:'line',data:{labels:dayLabels,datasets:[{label:'Vistas',data:dayCounts,borderColor:'#E50914',backgroundColor:'rgba(229,9,20,0.1)',tension:0.4,fill:true,pointBackgroundColor:'#E50914',pointRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{ticks:{color:tc},grid:{color:gc}}}}});}
+    return()=>{Object.values(chartsRef.current).forEach(c=>c?.destroy());chartsRef.current={};};
+  },[history.length,whitelist.length]);
+
+  return (
+    <div>
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-label">Total Vistas</div><div className="stat-value">{totalViews}</div></div>
+        <div className="stat-card"><div className="stat-label">Videos Únicos</div><div className="stat-value">{uniqueVideos}</div></div>
+        <div className="stat-card"><div className="stat-label">Canal Top</div><div className="stat-value" style={{fontSize:16,marginTop:4}}>{topChannel}</div></div>
+        <div className="stat-card"><div className="stat-label">Canales Activos</div><div className="stat-value">{whitelist.filter(c=>c.enabled).length}<span style={{fontSize:14,color:'var(--dt-text3)'}}> / {whitelist.length}</span></div></div>
+        <div className="stat-card"><div className="stat-label">Con Shorts</div><div className="stat-value">{whitelist.filter(c=>c.shorts&&c.enabled).length}</div></div>
+        <div className="stat-card"><div className="stat-label">Score Prom.</div><div className="stat-value">{whitelist.length?Math.round(whitelist.reduce((s,c)=>s+c.score,0)/whitelist.length*10)/10:0}</div></div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:24}}>
+        <div className="dt-card"><div className="dt-card-header"><div className="dt-card-title">Canales más vistos</div></div><div className="dt-card-body" style={{height:220}}>{top5.length?<canvas ref={barRef}/>:<div style={{padding:40,textAlign:'center',color:'var(--dt-text3)'}}>Sin datos</div>}</div></div>
+        <div className="dt-card"><div className="dt-card-header"><div className="dt-card-title">Por categoría</div></div><div className="dt-card-body" style={{height:220,display:'flex',alignItems:'center',justifyContent:'center'}}>{Object.keys(catCounts).length?<canvas ref={pieRef} style={{maxHeight:200}}/>:<div style={{color:'var(--dt-text3)'}}>Sin datos</div>}</div></div>
+      </div>
+      <div className="dt-card"><div className="dt-card-header"><div className="dt-card-title">Actividad — Últimos 7 días</div></div><div className="dt-card-body" style={{height:220}}><canvas ref={lineRef}/></div></div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN SETTINGS — app config + change password
+// ═══════════════════════════════════════════════
+function AdminSettings() {
+  const ctx = useContext(AppContext);
+  const { config, setConfig, whitelist, history, showToast } = ctx;
+  const [activeTab, setActiveTab] = useState('general');
+  const update=(k,v)=>setConfig(prev=>({...prev,[k]:v}));
+
+  // Change password state
+  const [curPw, setCurPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [pwError, setPwError] = useState('');
+  const [showPws, setShowPws] = useState({cur:false,new:false,conf:false});
+
+  const changePw=()=>{
+    const cur=curPw.replace(/[<>"'`]/g,'').trim();
+    const nw=newPw.replace(/[<>"'`]/g,'').trim();
+    const cf=confirmPw.replace(/[<>"'`]/g,'').trim();
+    if(cur!==auth.getPassword()){setPwError('Contraseña actual incorrecta');return;}
+    if(nw.length<6){setPwError('Mínimo 6 caracteres');return;}
+    if(nw!==cf){setPwError('Las contraseñas no coinciden');return;}
+    auth.setPassword(nw);
+    setCurPw('');setNewPw('');setConfirmPw('');setPwError('');
+    showToast('✓ Contraseña cambiada exitosamente','success');
+  };
+
+  const exportData=()=>{
+    const data={whitelist,history,config,exportedAt:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='luztube-backup.json';a.click();
+    showToast('Backup exportado','success');
+  };
+
+  const importData=(e)=>{
+    const file=e.target.files[0];if(!file)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.whitelist)ctx.setWhitelist(d.whitelist);if(d.config)setConfig(d.config);showToast('Datos importados','success');}catch{showToast('Error al importar','error');}};
+    r.readAsText(file);
+  };
+
+  const tabs=[{id:'general',label:'General'},{id:'seguridad',label:'🔒 Seguridad'},{id:'datos',label:'💾 Datos'}];
+
+  return (
+    <div>
+      <div className="dt-tabs">
+        {tabs.map(t=><div key={t.id} className={`dt-tab ${activeTab===t.id?'active':''}`} onClick={()=>setActiveTab(t.id)}>{t.label}</div>)}
+      </div>
+
+      {activeTab==='general'&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,maxWidth:700}}>
+          <div className="form-group" style={{gridColumn:'1/-1'}}>
+            <label className="form-label">Nombre de la Aplicación</label>
+            <input className="form-control" value={config.appName} onChange={e=>update('appName',e.target.value)}/>
+          </div>
+          <div className="form-group"><label className="form-label">Autoplay</label><div style={{display:'flex',alignItems:'center',gap:10}}><Toggle checked={config.autoplay} onChange={v=>update('autoplay',v)}/><span style={{fontSize:13}}>Reproducción automática</span></div></div>
+          <div className="form-group"><label className="form-label">Shorts</label><div style={{display:'flex',alignItems:'center',gap:10}}><Toggle checked={config.shortsEnabled} onChange={v=>update('shortsEnabled',v)}/><span style={{fontSize:13}}>Sección Shorts activa</span></div></div>
+          <div className="form-group"><label className="form-label">Siguiente automático</label><div style={{display:'flex',alignItems:'center',gap:10}}><Toggle checked={config.nextAutoplay} onChange={v=>update('nextAutoplay',v)}/><span style={{fontSize:13}}>Sugerir siguiente video</span></div></div>
+        </div>
+      )}
+
+      {activeTab==='seguridad'&&(
+        <div style={{maxWidth:420}}>
+          <div className="dt-card">
+            <div className="dt-card-header"><div className="dt-card-title">🔒 Cambiar Contraseña Admin</div></div>
+            <div className="dt-card-body">
+              <div style={{marginBottom:16,padding:'10px 14px',background:'rgba(59,130,246,0.08)',border:'1px solid rgba(59,130,246,0.2)',borderRadius:8,fontSize:13,color:'var(--dt-info)'}}>
+                ℹ️ La sesión admin no persiste. Deberás loguearte cada vez que abras la app.
+              </div>
+              {[
+                {label:'Contraseña actual',val:curPw,set:setCurPw,field:'cur'},
+                {label:'Nueva contraseña (mín. 6 caracteres)',val:newPw,set:setNewPw,field:'new'},
+                {label:'Confirmar nueva contraseña',val:confirmPw,set:setConfirmPw,field:'conf'},
+              ].map(f=>(
+                <div key={f.field} className="form-group pw-wrap">
+                  <label className="form-label">{f.label}</label>
+                  <input
+                    className="form-control"
+                    type={showPws[f.field]?'text':'password'}
+                    value={f.val}
+                    onChange={e=>{f.set(e.target.value);setPwError('');}}
+                    autoComplete="off"
+                    style={{paddingRight:44}}
+                  />
+                  <button className="pw-toggle" onClick={()=>setShowPws(s=>({...s,[f.field]:!s[f.field]}))}>
+                    {showPws[f.field]?'🙈':'👁'}
+                  </button>
+                </div>
+              ))}
+              {pwError&&<div style={{color:'#EF4444',fontSize:13,marginBottom:12}}>{pwError}</div>}
+              <button className="btn btn-primary" onClick={changePw}>Cambiar Contraseña</button>
+            </div>
+          </div>
+          <div className="dt-card" style={{marginTop:16}}>
+            <div className="dt-card-header"><div className="dt-card-title">🛡️ Información de Seguridad</div></div>
+            <div className="dt-card-body" style={{fontSize:13,color:'var(--dt-text2)',lineHeight:2}}>
+              <div>✓ Sesión admin sin persistencia</div>
+              <div>✓ Bloqueo tras {MAX_LOGIN_ATTEMPTS} intentos fallidos</div>
+              <div>✓ Lockout de {LOCKOUT_SECONDS} segundos</div>
+              <div>✓ API Key en storage separado</div>
+              <div>✓ Sanitización de inputs sensibles</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab==='datos'&&(
+        <div style={{maxWidth:500}}>
+          <div className="dt-card" style={{marginBottom:16}}>
+            <div className="dt-card-header"><div className="dt-card-title">Exportar / Importar</div></div>
+            <div className="dt-card-body" style={{display:'flex',flexDirection:'column',gap:14}}>
+              <button className="btn btn-secondary" onClick={exportData}>📤 Exportar backup completo (JSON)</button>
+              <div><label className="form-label">📥 Importar backup</label><input type="file" accept=".json" onChange={importData} className="form-control"/></div>
+            </div>
+          </div>
+          <div className="dt-card">
+            <div className="dt-card-header"><div className="dt-card-title" style={{color:'#EF4444'}}>⚠️ Zona de peligro</div></div>
+            <div className="dt-card-body" style={{display:'flex',flexDirection:'column',gap:12}}>
+              <button className="btn btn-danger" onClick={()=>{ctx.clearHistory();showToast('Historial borrado','success');}}>🗑️ Borrar todo el historial</button>
+              <button className="btn btn-danger" onClick={()=>{if(confirm('¿Restablecer configuración?')){setConfig(DEFAULT_CONFIG);showToast('Configuración restablecida','success');}}}>🔄 Restablecer configuración</button>
+              <button className="btn btn-danger" onClick={()=>{if(confirm('¿Eliminar TODOS los datos? No se puede deshacer.')){localStorage.clear();fetch('/data',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lt_whitelist:null,lt_config:null,lt_history:null,lt_favorites:null})}).finally(()=>window.location.reload());}}}>💣 Borrar todos los datos</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN PAGE
+// ═══════════════════════════════════════════════
+function AdminPage() {
+  const [logged, setLogged] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  if (!logged) return <AdminLogin onLogin={()=>setLogged(true)}/>;
+
+  const tabs=[
+    {id:'dashboard',label:'📊 Dashboard'},
+    {id:'whitelist',label:'📋 Whitelist'},
+    {id:'stats',label:'📈 Estadísticas'},
+    {id:'settings',label:'⚙️ Configuración'},
+  ];
+
+  return (
+    <div className="dt-page admin-section">
+      <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:28}}>
+        <div style={{fontFamily:'var(--dt-font-display)',fontSize:30,color:'var(--dt-primary)'}}>PANEL ADMIN</div>
+        <span className="badge badge-red">Acceso Restringido</span>
+        <button className="btn btn-ghost btn-sm" style={{marginLeft:'auto'}} onClick={()=>setLogged(false)}>
+          🚪 Cerrar Sesión
+        </button>
+      </div>
+      <div className="dt-tabs">
+        {tabs.map(t=><div key={t.id} className={`dt-tab ${activeTab===t.id?'active':''}`} onClick={()=>setActiveTab(t.id)}>{t.label}</div>)}
+      </div>
+      {activeTab==='dashboard'&&<AdminDashboard/>}
+      {activeTab==='whitelist'&&<AdminWhitelist/>}
+      {activeTab==='stats'&&<AdminStats/>}
+      {activeTab==='settings'&&<AdminSettings/>}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PROFILE SELECTOR — Netflix-style full screen
+// ═══════════════════════════════════════════════
+function ProfileSelector({ onSelect, onCreate, onEdit, onDelete }) {
+  const [profiles, setProfiles] = useState(() => profileManager.getProfiles());
+  const [showCreate, setShowCreate] = useState(false);
+  const [editProfile, setEditProfile] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  useEffect(() => {
+    const unsub = profileManager.onChange((p) => setProfiles([...p]));
+    return unsub;
+  }, []);
+
+  return (
+    <div style={{
+      position:'fixed',inset:0,zIndex:9999,
+      background:'linear-gradient(135deg,#0A0A0A 0%,#1A0A20 50%,#0A0A1E 100%)',
+      display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+      padding:24,animation:'fadeIn 0.3s ease'
+    }}>
+      <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:48,letterSpacing:2,color:'var(--dt-primary)',marginBottom:8}}>LUZTUBE</div>
+      <div style={{fontSize:22,fontWeight:600,color:'#fff',marginBottom:32}}>¿Quién está mirando?</div>
+      <div style={{display:'flex',gap:20,flexWrap:'wrap',justifyContent:'center',maxWidth:700}}>
+        {profiles.map(p => (
+          <div key={p.id} style={{textAlign:'center',cursor:'pointer',transition:'transform 0.2s'}}
+            onClick={() => { onSelect(p.id); }}
+            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <ProfileAvatar profile={p} size={100} />
+            <div style={{marginTop:10,fontSize:14,fontWeight:500,color:'#ccc'}}>{p.name}</div>
+            <div style={{display:'flex',gap:8,justifyContent:'center',marginTop:6}}>
+              <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setEditProfile(p); }}
+                style={{fontSize:11,color:'#888',padding:'4px 8px'}}>✏️</button>
+              <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setConfirmDelete(p); }}
+                style={{fontSize:11,color:'#EF4444',padding:'4px 8px'}}>🗑️</button>
+            </div>
+          </div>
+        ))}
+        <div style={{textAlign:'center',cursor:'pointer'}} onClick={() => setShowCreate(true)}>
+          <div style={{
+            width:100,height:100,borderRadius:'50%',background:'rgba(255,255,255,0.08)',
+            border:'3px dashed rgba(255,255,255,0.25)',display:'flex',alignItems:'center',
+            justifyContent:'center',fontSize:36,color:'rgba(255,255,255,0.4)',transition:'all 0.2s'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}
+          >+</div>
+          <div style={{marginTop:10,fontSize:14,fontWeight:500,color:'#888'}}>Agregar perfil</div>
+        </div>
+      </div>
+      {showCreate && <ProfileEditor onClose={() => setShowCreate(false)} onSave={(data) => { onCreate(data); setShowCreate(false); }} />}
+      {editProfile && <ProfileEditor profile={editProfile} onClose={() => setEditProfile(null)} onSave={(data) => { onEdit(editProfile.id, data); setEditProfile(null); }} />}
+      {confirmDelete && (
+        <div className="dt-overlay" onClick={() => setConfirmDelete(null)}>
+          <div className="dt-modal" style={{maxWidth:400}}>
+            <div className="dt-modal-body" style={{textAlign:'center',padding:32}}>
+              <div style={{fontSize:40,marginBottom:12}}>🗑️</div>
+              <div style={{fontSize:16,fontWeight:600,marginBottom:8}}>Eliminar "{confirmDelete.name}"?</div>
+              <div style={{fontSize:13,color:'var(--dt-text3)',marginBottom:20}}>Se borrarán el historial, favoritos y configuraciones de este perfil.</div>
+              <div style={{display:'flex',gap:12,justifyContent:'center'}}>
+                <button className="btn btn-secondary" onClick={() => setConfirmDelete(null)}>Cancelar</button>
+                <button className="btn btn-danger" onClick={() => { onDelete(confirmDelete.id); setConfirmDelete(null); }}>Eliminar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PROFILE AVATAR
+// ═══════════════════════════════════════════════
+function ProfileAvatar({ profile, size = 44, onClick }) {
+  const [src, setSrc] = useState(null);
+  useEffect(() => { profileManager.getAvatar(profile?.id).then(setSrc); }, [profile?.id]);
+
+  const style = {
+    width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0,
+    border: `3px solid ${profile?.color || '#333'}`,
+    cursor: onClick ? 'pointer' : 'default',
+    transition: 'all 0.2s',
+  };
+
+  if (src) return <img src={src} alt="" style={style} onClick={onClick} />;
+  return (
+    <div style={{
+      ...style, background: profile?.color || '#E50914', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', border: `3px solid ${profile?.color || '#333'}`,
+      fontWeight: 700, fontSize: size * 0.4, color: '#fff'
+    }} onClick={onClick}>
+      {(profile?.name || '?')[0].toUpperCase()}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PROFILE EDITOR (Create / Edit)
+// ═══════════════════════════════════════════════
+function ProfileEditor({ profile, onClose, onSave }) {
+  const [name, setName] = useState(profile?.name || '');
+  const [desc, setDesc] = useState(profile?.description || '');
+  const [color, setColor] = useState(profile?.color || '#E50914');
+  const [theme, setTheme] = useState(profile?.theme || 'dark');
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const previewUrlRef = useRef(null);
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); }
+    const url = URL.createObjectURL(file);
+    previewUrlRef.current = url;
+    setAvatarFile(file);
+    setPreview(url);
+    e.target.value = '';
+  };
+
+  useEffect(() => () => { if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current); }, []);
+
+  const save = async () => {
+    if (!name.trim()) return;
+    const data = { name: name.trim(), description: desc.trim(), color, theme };
+    onSave(data);
+    if (avatarFile) {
+      try {
+        const processed = await avatarProcessor.process(avatarFile);
+        const id = profile ? profile.id : profileManager.getActiveId();
+        if (id) await profileManager.saveAvatar(id, processed);
+      } catch (e) {
+        alert('Error al procesar la foto: ' + e.message);
+      }
+    }
+  };
+
+  const colors = ['#E50914','#FF6B35','#FFD700','#46D369','#3B82F6','#A855F7','#FF2D78','#00F5FF','#FFE600','#FF4081','#C0A050','#7B2FFF'];
+
+  return (
+    <div className="dt-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="dt-modal" style={{maxWidth:480}}>
+        <div className="dt-modal-header">
+          <div className="dt-modal-title">{profile ? 'Editar Perfil' : 'Crear Perfil'}</div>
+          <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
+        </div>
+        <div className="dt-modal-body">
+          <div style={{textAlign:'center',marginBottom:20}}>
+            <div style={{position:'relative',display:'inline-block'}}>
+              {preview ? (
+                <img src={preview} alt="" style={{width:88,height:88,borderRadius:'50%',objectFit:'cover',border:`3px solid ${color}`}} />
+              ) : (
+                <div style={{width:88,height:88,borderRadius:'50%',background:color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:40,fontWeight:700,color:'#fff',border:`3px solid ${color}`}}>
+                  {(name || '?')[0].toUpperCase()}
+                </div>
+              )}
+              <label style={{position:'absolute',bottom:0,right:0,width:30,height:30,borderRadius:'50%',background:'var(--dt-bg4)',border:'2px solid var(--dt-bg2)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',fontSize:14}}>
+                📷<input type="file" accept="image/*,image/heic,image/heif" onChange={handleFile} style={{display:'none'}}/>
+              </label>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Nombre</label>
+            <input className="form-control" value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del perfil" maxLength={30} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Descripción</label>
+            <input className="form-control" value={desc} onChange={e => setDesc(e.target.value)} placeholder="Breve descripción" maxLength={100} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Color favorito</label>
+            <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+              {colors.map(c => (
+                <div key={c} onClick={() => setColor(c)} style={{
+                  width:32,height:32,borderRadius:'50%',background:c,cursor:'pointer',
+                  border: color === c ? '3px solid #fff' : '3px solid transparent',
+                  boxShadow: color === c ? `0 0 12px ${c}` : 'none', transition:'all 0.15s'
+                }} />
+              ))}
+              <input type="color" value={color} onChange={e => setColor(e.target.value)}
+                style={{width:32,height:32,border:'none',borderRadius:'50%',cursor:'pointer',padding:0}} />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Tema favorito</label>
+            <select className="form-select" value={theme} onChange={e => setTheme(e.target.value)}>
+              <option value="dark">Oscuro</option><option value="light">Claro</option>
+              <option value="oled">OLED</option><option value="netflix">Netflix</option>
+              <option value="synthwave">Synthwave</option><option value="cyberpunk">Cyberpunk</option>
+              <option value="minimal">Minimal</option><option value="kids">Infantil</option>
+            </select>
+          </div>
+        </div>
+        <div className="dt-modal-footer">
+          <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-primary" onClick={save} disabled={!name.trim()}>Guardar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PROFILE SETTINGS PAGE
+// ═══════════════════════════════════════════════
+function ProfileSettingsPage() {
+  const { createProfile } = useContext(AppContext);
+  const [profiles, setProfiles] = useState(() => profileManager.getProfiles());
+  const [activeId, setActiveId] = useState(() => profileManager.getActiveId());
+  const [editProfile, setEditProfile] = useState(null);
+  const [wallpaperFile, setWallpaperFile] = useState(null);
+  const [wallpaperPreview, setWallpaperPreview] = useState(null);
+  const [wallpaperMode, setWallpaperMode] = useState('cover');
+  const [showFontManager, setShowFontManager] = useState(false);
+  const [showCreateProfile, setShowCreateProfile] = useState(false);
+  const wpPreviewRef = useRef(null);
+
+  useEffect(() => {
+    const unsub = profileManager.onChange((p, a) => { setProfiles([...p]); setActiveId(a); });
+    return () => { unsub(); if (wpPreviewRef.current) URL.revokeObjectURL(wpPreviewRef.current); };
+  }, []);
+
+  const active = profiles.find(p => p.id === activeId);
+
+  const handleWallpaper = async () => {
+    if (!wallpaperFile || !active) return;
+    try {
+      const result = await wallpaperProcessor.process(wallpaperFile, { mode: wallpaperMode });
+      await profileManager.saveWallpaper(active.id, result);
+      if (wpPreviewRef.current) { URL.revokeObjectURL(wpPreviewRef.current); wpPreviewRef.current = null; }
+      setWallpaperFile(null);
+      setWallpaperPreview(null);
+    } catch (e) {
+      alert('Error al procesar el wallpaper: ' + e.message);
+    }
+  };
+
+  const removeWallpaper = async () => {
+    if (!active) return;
+    await idb.del("wallpapers", active.id);
+    profileManager.update(active.id, { wallpaper: null });
+    if (wpPreviewRef.current) { URL.revokeObjectURL(wpPreviewRef.current); wpPreviewRef.current = null; }
+    setWallpaperPreview(null);
+  };
+
+  const switchProfile = (id) => {
+    profileManager.switchTo(id);
+    statsTracker.startSession();
+  };
+
+  return (
+    <div className="dt-page">
+      <div className="section-header" style={{marginBottom:24}}>
+        <div className="section-dot"/>
+        <div className="section-title">👤 Mis Perfiles</div>
+      </div>
+
+      <div style={{marginBottom:16,display:'flex',gap:12,flexWrap:'wrap',alignItems:'center'}}>
+        <button className="btn btn-primary btn-sm" onClick={() => setShowCreateProfile(true)}>➕ Crear nuevo perfil</button>
+        <span style={{fontSize:12,color:'var(--dt-text3)'}}>{profiles.length} perfil{profiles.length !== 1 ? 'es' : ''}</span>
+      </div>
+
+      <div className="stats-grid" style={{marginBottom:28}}>
+        {profiles.map(p => (
+          <div key={p.id} className={`stat-card`} style={{
+            cursor:'pointer', textAlign:'center', padding:20,
+            border: p.id === activeId ? `2px solid ${p.color}` : '1px solid var(--dt-border)'
+          }} onClick={() => switchProfile(p.id)}>
+            <ProfileAvatar profile={p} size={64} />
+            <div style={{fontSize:14,fontWeight:700,marginTop:8,color: p.id === activeId ? p.color : 'inherit'}}>{p.name}</div>
+            <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:2}}>{p.description || 'Sin descripción'}</div>
+            {p.id === activeId && <div className="badge badge-green" style={{marginTop:6}}>Activo</div>}
+            <button className="btn btn-ghost btn-sm" style={{marginTop:6}} onClick={() => setEditProfile(p)}>✏️ Editar</button>
+          </div>
+        ))}
+      </div>
+
+      {active && (
+        <>
+          <div className="dt-card" style={{marginBottom:20}}>
+            <div className="dt-card-header"><div className="dt-card-title">🎨 Wallpaper personal</div></div>
+            <div className="dt-card-body">
+              {wallpaperPreview && <img src={wallpaperPreview} alt="" style={{width:'100%',maxHeight:160,objectFit:'cover',borderRadius:8,marginBottom:12}} />}
+              <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'center'}}>
+                <label className="btn btn-secondary" style={{cursor:'pointer'}}>
+                  📁 Seleccionar imagen<input type="file" accept="image/*,image/heic,image/heif" style={{display:'none'}}
+                    onChange={e => { const f = e.target.files[0]; if (f) { if (wpPreviewRef.current) URL.revokeObjectURL(wpPreviewRef.current); wpPreviewRef.current = URL.createObjectURL(f); setWallpaperFile(f); setWallpaperPreview(wpPreviewRef.current); e.target.value = ''; } }} />
+                </label>
+                <select className="form-select" style={{width:120}} value={wallpaperMode} onChange={e => setWallpaperMode(e.target.value)}>
+                  <option value="cover">Cover</option><option value="contain">Contain</option>
+                  <option value="stretch">Stretch</option><option value="tile">Tile</option>
+                </select>
+                <button className="btn btn-primary" disabled={!wallpaperFile} onClick={handleWallpaper}>Aplicar</button>
+                <button className="btn btn-danger" onClick={removeWallpaper}>Quitar</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="dt-card" style={{marginBottom:20}}>
+            <div className="dt-card-header">
+              <div className="dt-card-title">🔤 Fuentes instaladas</div>
+              <button className="btn btn-secondary btn-sm" onClick={() => setShowFontManager(true)}>Gestionar</button>
+            </div>
+            <div className="dt-card-body">
+              <div style={{fontSize:13,color:'var(--dt-text2)',marginBottom:12}}>
+                Las fuentes se almacenan localmente y funcionan sin internet.
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {editProfile && (
+        <ProfileEditor profile={editProfile} onClose={() => setEditProfile(null)}
+          onSave={(data) => { profileManager.update(editProfile.id, data); setEditProfile(null); }} />
+      )}
+      {showCreateProfile && (
+        <ProfileEditor onClose={() => setShowCreateProfile(false)}
+          onSave={(data) => { createProfile(data); setShowCreateProfile(false); }} />
+      )}
+      {showFontManager && <FontManagerPanel onClose={() => setShowFontManager(false)} />}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// FONT MANAGER PANEL
+// ═══════════════════════════════════════════════
+function FontManagerPanel({ onClose }) {
+  const [fonts, setFonts] = useState([]);
+  const [installing, setInstalling] = useState(false);
+
+  useEffect(() => { fontManager.list().then(setFonts); }, []);
+
+  const install = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setInstalling(true);
+    try {
+      const font = await fontManager.install(file);
+      setFonts(prev => [...prev, font]);
+    } catch (err) {
+      alert(err.message);
+    }
+    setInstalling(false);
+    e.target.value = '';
+  };
+
+  const toggle = async (id) => {
+    await fontManager.toggle(id);
+    setFonts(await fontManager.list());
+  };
+
+  const remove = async (id) => {
+    await fontManager.remove(id);
+    setFonts(await fontManager.list());
+  };
+
+  return (
+    <div className="dt-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="dt-modal" style={{maxWidth:560}}>
+        <div className="dt-modal-header">
+          <div className="dt-modal-title">🔤 Gestor de Fuentes</div>
+          <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
+        </div>
+        <div className="dt-modal-body">
+          <div style={{marginBottom:20}}>
+            <label className="btn btn-primary" style={{cursor:'pointer'}}>
+              {installing ? '⏳ Instalando...' : '📥 Subir fuente'}<input type="file" accept=".ttf,.otf,.woff,.woff2" onChange={install} style={{display:'none'}} disabled={installing} />
+            </label>
+            <div style={{fontSize:11,color:'var(--dt-text3)',marginTop:6}}>Formatos: TTF, OTF, WOFF, WOFF2</div>
+          </div>
+          {fonts.length === 0 ? (
+            <div className="empty-state" style={{padding:'32px 0'}}>
+              <div className="empty-icon" style={{fontSize:36}}>🔤</div>
+              <div className="empty-title" style={{fontSize:14}}>Sin fuentes instaladas</div>
+              <div className="empty-sub" style={{fontSize:12}}>Subí un archivo de fuente para empezar</div>
+            </div>
+          ) : (
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              {fonts.map(f => (
+                <div key={f.id} className="dt-card" style={{display:'flex',alignItems:'center',gap:12,padding:'12px 16px'}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:600,fontSize:13,fontFamily:f.active ? f.name : 'inherit'}}>{f.name}</div>
+                    <div style={{fontSize:11,color:'var(--dt-text3)'}}>.{f.ext} · {(f.size / 1024).toFixed(1)}KB · {new Date(f.installedAt).toLocaleDateString()}</div>
+                  </div>
+                  <Toggle checked={f.active} onChange={() => toggle(f.id)} />
+                  <button className="btn btn-danger btn-sm" onClick={() => remove(f.id)}>🗑️</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// STATS OVERVIEW CARD
+// ═══════════════════════════════════════════════
+function ProfileStatsCard({ profile }) {
+  const s = profile?.stats || DEFAULT_PROFILE.stats;
+  const days = Math.max(1, Math.ceil((Date.now() - new Date(profile?.createdAt || Date.now()).getTime()) / 86400000));
+  const dailyAvg = (s.videosWatched / days).toFixed(1);
+  const hoursWatched = ((s.totalWatchTime || 0) / 3600).toFixed(1);
+  return (
+    <div className="stats-grid" style={{marginBottom:4}}>
+      <div className="stat-card"><div className="stat-label">Videos vistos</div><div className="stat-value">{s.videosWatched}</div></div>
+      <div className="stat-card"><div className="stat-label">Horas reproducidas</div><div className="stat-value">{hoursWatched}h</div></div>
+      <div className="stat-card"><div className="stat-label">Canales vistos</div><div className="stat-value">{(s.channelsWatched || []).length}</div></div>
+      <div className="stat-card"><div className="stat-label">Búsquedas</div><div className="stat-value">{s.searches}</div></div>
+      <div className="stat-card"><div className="stat-label">Sesiones</div><div className="stat-value">{s.sessions}</div></div>
+      <div className="stat-card"><div className="stat-label">Promedio diario</div><div className="stat-value">{dailyAvg}</div></div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN DASHBOARD — enhanced
+// ═══════════════════════════════════════════════
+function AdminDashboard() {
+  const { whitelist } = useContext(AppContext);
+  const profiles = profileManager.getProfiles();
+  const activityLog = activityLogger.get();
+  const videosWatched = profiles.reduce((s, p) => s + (p.stats?.videosWatched || 0), 0);
+  const totalSessions = profiles.reduce((s, p) => s + (p.stats?.sessions || 0), 0);
+  const totalWatchTime = profiles.reduce((s, p) => s + (p.stats?.totalWatchTime || 0), 0);
+  const totalHours = (totalWatchTime / 3600).toFixed(1);
+  const apiActive = !!apiKeyStore.get();
+
+  const [storageInfo, setStorageInfo] = useState({ lsSize: 0, idbSize: 0 });
+  useEffect(() => {
+    const lsSize = new Blob([JSON.stringify(localStorage)]).size;
+    let idbSize = 0;
+    idb.keys("avatars").then(keys => { idbSize += keys.length * 50000; });
+    idb.keys("wallpapers").then(keys => { idbSize += keys.length * 300000; });
+    idb.keys("fonts").then(keys => { idbSize += keys.length * 100000; });
+    setStorageInfo({ lsSize: (lsSize / 1024).toFixed(1), idbSize: (idbSize / 1024).toFixed(1) });
+  }, []);
+
+  const barRef = useRef(null), pieRef = useRef(null), chartsRef = useRef({});
+
+  const catCounts = whitelist.reduce((acc, ch) => { acc[ch.category] = (acc[ch.category] || 0) + 1; return acc; }, {});
+  const catLabels = Object.keys(catCounts);
+  const catValues = Object.values(catCounts);
+  const topChannels = [...whitelist].sort((a, b) => b.score - a.score).slice(0, 5);
+
+  useEffect(() => {
+    const tc = '#B3B3B3', gc = 'rgba(255,255,255,0.06)';
+    if (barRef.current && profiles.length) {
+      if (chartsRef.current.bar) chartsRef.current.bar.destroy();
+      const profNames = profiles.map(p => p.name);
+      const profVids = profiles.map(p => p.stats?.videosWatched || 0);
+      chartsRef.current.bar = new Chart(barRef.current, {
+        type: 'bar',
+        data: { labels: profNames, datasets: [{ label: 'Videos vistos', data: profVids, backgroundColor: '#E50914', borderRadius: 6, borderSkipped: false }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: tc }, grid: { display: false } }, y: { ticks: { color: tc }, grid: { color: gc } } } }
+      });
+    }
+    if (pieRef.current && catLabels.length) {
+      if (chartsRef.current.pie) chartsRef.current.pie.destroy();
+      const colors = ['#E50914','#3B82F6','#46D369','#FFD700','#FF6B35','#A855F7','#F97316','#FF2D78','#00F5FF','#FFE600'];
+      chartsRef.current.pie = new Chart(pieRef.current, {
+        type: 'doughnut',
+        data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: colors.slice(0, catLabels.length), borderWidth: 2, borderColor: '#1A1A1A' }] },
+        options: { responsive: true, plugins: { legend: { labels: { color: tc, font: { size: 12 } } } } }
+      });
+    }
+    return () => { Object.values(chartsRef.current).forEach(c => c?.destroy()); chartsRef.current = {}; };
+  }, [profiles.length, whitelist.length]);
+
+  return (
+    <div>
+      <div className="stats-grid" style={{marginBottom:24}}>
+        <div className="stat-card"><div className="stat-label">Usuarios totales</div><div className="stat-value">{profiles.length}</div></div>
+        <div className="stat-card"><div className="stat-label">Videos vistos</div><div className="stat-value">{videosWatched}</div></div>
+        <div className="stat-card"><div className="stat-label">Canales seguidos</div><div className="stat-value">{whitelist.filter(c => c.enabled).length}</div></div>
+        <div className="stat-card"><div className="stat-label">Horas reproducidas</div><div className="stat-value">{totalHours}h</div></div>
+        <div className="stat-card"><div className="stat-label">Sesiones totales</div><div className="stat-value">{totalSessions}</div></div>
+        <div className="stat-card">
+          <div className="stat-label">API YouTube</div>
+          <div className="stat-value" style={{fontSize:16}}>
+            <span className={`api-dot api-dot-${apiActive ? 'ok' : 'bad'}`}/>
+            {apiActive ? 'Activa' : 'Inactiva'}
+          </div>
+        </div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:24}}>
+        <div className="dt-card">
+          <div className="dt-card-header"><div className="dt-card-title">Videos por usuario</div></div>
+          <div className="dt-card-body" style={{height:200}}>{profiles.length > 1 ? <canvas ref={barRef} /> : <div style={{padding:40,textAlign:'center',color:'var(--dt-text3)'}}>Creá más perfiles para ver gráficos</div>}</div>
+        </div>
+        <div className="dt-card">
+          <div className="dt-card-header"><div className="dt-card-title">Categorías</div></div>
+          <div className="dt-card-body" style={{height:200,display:'flex',alignItems:'center',justifyContent:'center'}}>{catLabels.length ? <canvas ref={pieRef} style={{maxHeight:180}} /> : <div style={{color:'var(--dt-text3)'}}>Sin datos</div>}</div>
+        </div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:24}}>
+        <div className="dt-card">
+          <div className="dt-card-header"><div className="dt-card-title">🏆 Top canales por score</div></div>
+          <div className="dt-card-body">
+            {topChannels.map((ch, i) => (
+              <div key={ch.id || ch.name} style={{display:'flex',alignItems:'center',gap:12,padding:'8px 0',borderBottom:'1px solid var(--dt-border)'}}>
+                <span style={{fontWeight:700,fontSize:13,color:'var(--dt-text3)',width:24}}>#{i + 1}</span>
+                <div style={{fontWeight:500,fontSize:13,flex:1}}>{ch.name}</div>
+                <span className="badge badge-blue">{ch.category}</span>
+                <span style={{fontSize:12,fontWeight:700,color:'var(--dt-primary)'}}>{ch.score}/10</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="dt-card">
+          <div className="dt-card-header"><div className="dt-card-title">💾 Almacenamiento</div></div>
+          <div className="dt-card-body">
+            <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid var(--dt-border)'}}>
+              <span style={{fontSize:13}}>📦 localStorage</span>
+              <span style={{fontSize:13,fontWeight:600}}>{storageInfo.lsSize} KB</span>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0',borderBottom:'1px solid var(--dt-border)'}}>
+              <span style={{fontSize:13}}>🖼️ Avatares (IndexedDB)</span>
+              <span style={{fontSize:13,fontWeight:600}}>{storageInfo.idbSize} KB</span>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',padding:'8px 0'}}>
+              <span style={{fontSize:13}}>🗄️ data.json (servidor)</span>
+              <span style={{fontSize:13,fontWeight:600}}><span className="api-dot api-dot-ok"/> OK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="dt-card" style={{marginBottom:24}}>
+        <div className="dt-card-header">
+          <div className="dt-card-title">📋 Actividad reciente</div>
+          <button className="btn btn-danger btn-sm" onClick={() => { activityLogger.clear(); alert('Actividad borrada'); }}>🗑️</button>
+        </div>
+        <div className="dt-card-body" style={{maxHeight:260,overflow:'auto'}}>
+          {activityLog.length === 0 ? (
+            <div style={{textAlign:'center',color:'var(--dt-text3)',padding:20}}>Sin actividad registrada</div>
+          ) : (
+            <table className="dt-table">
+              <thead><tr><th>Fecha</th><th>Acción</th><th>Detalle</th></tr></thead>
+              <tbody>
+                {activityLog.slice(0, 50).map(log => (
+                  <tr key={log.id}>
+                    <td style={{whiteSpace:'nowrap',fontSize:11}}>{new Date(log.timestamp).toLocaleString('es-AR')}</td>
+                    <td style={{fontWeight:500,fontSize:12}}>{log.action}</td>
+                    <td style={{fontSize:11,color:'var(--dt-text3)'}}>{JSON.stringify(log.details).slice(0, 60)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// MAIN APP
+// ═══════════════════════════════════════════════
+function App() {
+  const [whitelist, setWhitelistRaw] = useState(()=>storage.get('lt_whitelist',DEFAULT_WHITELIST));
+  const [config, setConfigRaw] = useState(()=>storage.get('lt_config',DEFAULT_CONFIG));
+  const [profilesReady, setProfilesReady] = useState(false);
+  const [profiles, setProfiles] = useState([]);
+  const [activeProfile, setActiveProfile] = useState(null);
+  const [currentPage, setCurrentPage] = useState('home');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
+  const profileHistory = activeProfile?.history || [];
+  const profileFavorites = activeProfile?.favorites || [];
+
+  // Init: load server data, run migration, init profiles
+  useEffect(() => {
+    (async () => {
+      const serverData = await serverStorage.loadAll();
+      if (serverData) {
+        if (serverData.lt_whitelist) setWhitelistRaw(serverData.lt_whitelist);
+        if (serverData.lt_config) setConfigRaw(c => ({ ...DEFAULT_CONFIG, ...c, ...serverData.lt_config }));
+      }
+      await migrationManager.run(serverData);
+      await profileManager.init(serverData);
+      const p = profileManager.getProfiles();
+      const active = profileManager.getActive();
+      setProfiles(p);
+      setActiveProfile(active);
+      setProfilesReady(true);
+      statsTracker.startSession();
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Subscribe to profile changes
+  useEffect(() => {
+    const unsub = profileManager.onChange((p, a) => {
+      setProfiles([...p]);
+      setActiveProfile(profileManager.getActive());
+    });
+    return unsub;
+  }, []);
+
+  // Persist whitelist & config
+  const setWhitelist = useCallback(v => { setWhitelistRaw(v); storage.set('lt_whitelist', v); serverStorage.save('lt_whitelist', v); }, []);
+  const setConfig = useCallback(v => { setConfigRaw(v); storage.set('lt_config', v); serverStorage.save('lt_config', v); }, []);
+
+  const showToast = useCallback((message, type = 'info') => {
+    const id = Date.now();
+    setToasts(t => [...t, { id, message, type }]);
+    setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3500);
+  }, []);
+
+  const addHistory = useCallback((video) => {
+    if (!activeProfile) return;
+    const videoId = getVideoId(video);
+    if (!videoId) return;
+    const title = video.snippet?.title || '';
+    const channel = video.snippet?.channelTitle || '';
+    const thumb = video.snippet?.thumbnails?.medium?.url || '';
+    const channelId = video.snippet?.channelId || '';
+    const category = whitelist.find(c => c.id === channelId)?.category || '';
+    const history = profileManager.getProfileData(activeProfile.id, 'history') || [];
+    const existing = history.findIndex(h => h.videoId === videoId);
+    if (existing >= 0) {
+      history[existing] = { ...history[existing], count: (history[existing].count || 1) + 1, watchedAt: new Date().toISOString() };
+    } else {
+      history.unshift({ videoId, title, channel, thumb, watchedAt: new Date().toISOString(), count: 1 });
+      if (history.length > 500) history.length = 500;
+    }
+    profileManager.setProfileData(activeProfile.id, 'history', history);
+    serverStorage.saveImmediate(`profile_${activeProfile.id}_history`, history);
+    statsTracker.track(activeProfile.id, 'watch', { channelId, category, duration: 0 });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile, whitelist]);
+
+  const clearHistory = useCallback(() => {
+    if (!activeProfile) return;
+    profileManager.setProfileData(activeProfile.id, 'history', []);
+  }, [activeProfile]);
+
+  const toggleFavorite = useCallback((video) => {
+    if (!activeProfile) return;
+    const vid = getVideoId(video);
+    const favs = profileManager.getProfileData(activeProfile.id, 'favorites') || [];
+    const idx = favs.findIndex(f => getVideoId(f) === vid);
+    if (idx >= 0) { favs.splice(idx, 1); } else { favs.push(video); }
+    profileManager.setProfileData(activeProfile.id, 'favorites', favs);
+  }, [activeProfile]);
+
+  // Profile actions
+  const createProfile = useCallback((data) => {
+    const p = profileManager.create(data);
+    if (p) {
+      activityLogger.log("profile_created", { name: p.name });
+      if (data.avatarDataUrl) profileManager.saveAvatar(p.id, data.avatarDataUrl);
+    }
+  }, []);
+
+  const editProfile = useCallback((id, data) => {
+    profileManager.update(id, data);
+    activityLogger.log("profile_edited", { id, ...data });
+  }, []);
+
+  const deleteProfile = useCallback((id) => {
+    profileManager.remove(id);
+    idb.del("avatars", id);
+    idb.del("wallpapers", id);
+    activityLogger.log("profile_deleted", { id });
+  }, []);
+
+  const selectProfile = useCallback((id) => {
+    profileManager.switchTo(id);
+    setActiveProfile(profileManager.getActive());
+    statsTracker.startSession();
+    activityLogger.log("profile_login", { profileId: id });
+  }, []);
+
+  const logout = useCallback(() => {
+    if (activeProfile?.id) {
+      activityLogger.log("profile_logout", { profileId: activeProfile.id });
+      statsTracker.track(activeProfile.id, 'session_end', {});
+    }
+    storage.set("lt_active_profile", "");
+    setActiveProfile(null);
+    setCurrentPage('home');
+  }, [activeProfile]);
+
+  // Apply config + profile wallpaper to CSS
+  useEffect(() => {
+    if (!activeProfile) return;
+    const mergedConfig = profileManager.getMergedConfig(activeProfile.id);
+    const c = { ...config, ...mergedConfig };
+    const r = document.documentElement;
+    if (c.primaryColor) r.style.setProperty('--dt-primary', c.primaryColor);
+    if (c.bgColor) r.style.setProperty('--dt-bg', c.bgColor);
+    if (c.bgColor2) r.style.setProperty('--dt-bg2', c.bgColor2);
+    if (c.cardColor) r.style.setProperty('--dt-surface', c.cardColor);
+    if (c.sidebarColor) r.style.setProperty('--dt-sidebar-bg', c.sidebarColor);
+    if (c.textColor) r.style.setProperty('--dt-text', c.textColor);
+    if (c.secondaryColor) r.style.setProperty('--dt-secondary', c.secondaryColor);
+    if (c.accentColor) r.style.setProperty('--dt-accent', c.accentColor);
+    if (c.thumbSize) r.style.setProperty('--dt-thumb-size', `${c.thumbSize}px`);
+    if (c.borderRadius) r.style.setProperty('--dt-card-radius', `${c.borderRadius}px`);
+    if (c.fontFamily) r.style.setProperty('--dt-font', `'${c.fontFamily}', sans-serif`);
+    if (c.fontSize) document.body.style.fontSize = `${c.fontSize}px`;
+    if (c.letterSpacing) r.style.setProperty('letter-spacing', `${c.letterSpacing}px`);
+    if (c.zoomUI) r.style.setProperty('--dt-zoom', c.zoomUI);
+    if (c.backgroundBlur) r.style.setProperty('--dt-blur-intensity', `${c.backgroundBlur}px`);
+    document.title = c.appName || 'LuzTube';
+    const body = document.body;
+    ['theme-light','theme-oled','theme-netflix','theme-synthwave','theme-vaporwave',
+     'theme-minimal','theme-glassmorphism','theme-retro','theme-cyberpunk','theme-kids',
+     'effects-glow','effects-shadows','no-animations','kids-mode'].forEach(cls => body.classList.remove(cls));
+    if (c.theme && c.theme !== 'dark') body.classList.add(`theme-${c.theme}`);
+    if (c.glowEffects) body.classList.add('effects-glow');
+    if (c.shadowEffects) body.classList.add('effects-shadows');
+    if (!c.animationsEnabled) body.classList.add('no-animations');
+    if (c.kidsMode) body.classList.add('kids-mode');
+    if (c.roundedUI) r.style.setProperty('--dt-card-radius', '20px');
+    if (c.gradientBg) body.style.background = 'linear-gradient(135deg,var(--dt-bg) 0%,var(--dt-bg3) 50%,var(--dt-bg) 100%)';
+    else body.style.background = '';
+    // Apply wallpaper
+    (async () => {
+      const wp = activeProfile?.wallpaper ? await profileManager.getWallpaper(activeProfile.id) : null;
+      if (wp) {
+        if (wp.mode === 'tile') r.style.setProperty('--dt-bg-image', `url("${wp.dataUrl}")`);
+        else r.style.setProperty('--dt-bg-image', `url("${wp.dataUrl}")`);
+        body.style.backgroundSize = wp.mode === 'cover' ? 'cover' : wp.mode === 'contain' ? 'contain' : wp.mode === 'stretch' ? '100% 100%' : 'auto';
+        body.style.backgroundAttachment = 'fixed';
+        body.style.backgroundPosition = 'center';
+        body.style.backgroundRepeat = wp.mode === 'tile' ? 'repeat' : 'no-repeat';
+        if (wp.darken > 0) body.style.boxShadow = `inset 0 0 0 9999px rgba(0,0,0,${wp.darken / 100})`;
+      } else if (!c.backgroundImage) {
+        r.style.setProperty('--dt-bg-image', 'none');
+        body.style.background = '';
+        body.style.boxShadow = 'none';
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeProfile, config]);
+
+  // Sync API key
+  useEffect(() => {
+    const storedKey = apiKeyStore.get();
+    if (storedKey && !config.youtubeApiKey) setConfig(prev => ({ ...prev, youtubeApiKey: storedKey }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const navigate = useCallback((page) => { setCurrentPage(page); setMobileSidebarOpen(false); }, []);
+  const doSearch = () => {
+    if (!searchInput.trim()) return;
+    setSearchQuery(searchInput.trim()); navigate('search');
+    if (activeProfile) statsTracker.track(activeProfile.id, 'search');
+  };
+  const isActive = (page) => currentPage === page;
+
+  // Show profile selector until one is selected
+  if (!profilesReady) {
+    return <div style={{position:'fixed',inset:0,background:'#0A0A0A',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{width:44,height:44,border:'4px solid #333',borderTop:'4px solid var(--dt-primary)',borderRadius:'50%',animation:'spin 0.8s linear infinite'}} />
+    </div>;
+  }
+
+  if (!activeProfile && profiles.length === 0) {
+    return <ProfileSelector
+      profiles={[]}
+      onSelect={() => {}}
+      onCreate={createProfile}
+      onEdit={editProfile}
+      onDelete={deleteProfile}
+    />;
+  }
+
+  if (!activeProfile) {
+    return <ProfileSelector
+      onSelect={selectProfile}
+      onCreate={createProfile}
+      onEdit={editProfile}
+      onDelete={deleteProfile}
+    />;
+  }
+
+  const navItems = [
+    { id: 'home', icon: '🏠', label: 'Inicio' },
+    { id: 'channels', icon: '📺', label: 'Canales' },
+    ...(config.shortsEnabled ? [{ id: 'shorts', icon: '⚡', label: 'Shorts' }] : []),
+    { id: 'favorites', icon: '⭐', label: 'Favoritos', badge: profileFavorites.length || null },
+    { id: 'history', icon: '🕐', label: 'Historial' },
+  ];
+
+  // Also expose profile data through context for backward-compatible components
+  const ctx = {
+    whitelist, setWhitelist,
+    config, setConfig,
+    history: profileHistory, addHistory, clearHistory,
+    favorites: profileFavorites, toggleFavorite,
+    showToast, navigate,
+    activeProfile, profiles, selectProfile, createProfile, logout,
+  };
+
+  const sidebarCls = `dt-sidebar ${sidebarCollapsed ? 'collapsed' : ''} ${mobileSidebarOpen ? 'mobile-open' : ''}`;
+  const topbarCls = `dt-topbar ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`;
+  const mainCls = `dt-main ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`;
+
+  return (
+    <AppContext.Provider value={ctx}>
+      <aside className={sidebarCls}>
+        <div className="dt-logo">
+          <div className="dt-logo-icon">{config.logoEmoji}</div>
+          {!sidebarCollapsed && <div className="dt-logo-text">{config.appName}</div>}
+        </div>
+        <nav className="dt-nav">
+          <div className="dt-nav-section">
+            {!sidebarCollapsed && <div className="dt-nav-label">Menú</div>}
+            {navItems.map(item => (
+              <div key={item.id} className={`dt-nav-item ${isActive(item.id) ? 'active' : ''}`} onClick={() => navigate(item.id)}>
+                <span className="dt-nav-icon">{item.icon}</span>
+                {!sidebarCollapsed && <span>{item.label}</span>}
+                {!sidebarCollapsed && item.badge && <span className="dt-nav-badge">{item.badge}</span>}
+              </div>
+            ))}
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--dt-border)', margin: '4px 8px 12px' }} />
+          <div className="dt-nav-section">
+            {!sidebarCollapsed && <div className="dt-nav-label">Herramientas</div>}
+            <div className={`dt-nav-item api-section ${isActive('api') ? 'active' : ''}`} onClick={() => navigate('api')}>
+              <span className="dt-nav-icon">🔑</span>
+              {!sidebarCollapsed && <span>Conexión YouTube</span>}
+              {!sidebarCollapsed && (
+                <span style={{ marginLeft: 'auto' }}><span className={`api-dot ${apiKeyStore.get() ? 'api-dot-ok' : 'api-dot-unknown'}`} /></span>
+              )}
+            </div>
+            <div className={`dt-nav-item ${isActive('customize') ? 'active' : ''}`} onClick={() => navigate('customize')}>
+              <span className="dt-nav-icon">🎨</span>
+              {!sidebarCollapsed && <span>Personalizar</span>}
+            </div>
+            <div className={`dt-nav-item ${isActive('profiles') ? 'active' : ''}`} onClick={() => navigate('profiles')}>
+              <span className="dt-nav-icon">👤</span>
+              {!sidebarCollapsed && <span>Mis Perfiles</span>}
+            </div>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--dt-border)', margin: '4px 8px 12px' }} />
+          <div className="dt-nav-section admin-section">
+            {!sidebarCollapsed && <div className="dt-nav-label">Admin</div>}
+            <div className={`dt-nav-item ${isActive('admin') ? 'active' : ''}`} onClick={() => navigate('admin')}>
+              <span className="dt-nav-icon">🔐</span>
+              {!sidebarCollapsed && <span>Panel Admin</span>}
+            </div>
+          </div>
+        </nav>
+        {!sidebarCollapsed && (
+          <div style={{ padding: '12px 16px', borderTop: '1px solid var(--dt-border)', fontSize: 11, color: 'var(--dt-text3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <ProfileAvatar profile={activeProfile} size={24} />
+              <span style={{ fontWeight: 600, fontSize: 12 }}>{activeProfile.name}</span>
+              <button className="btn btn-ghost btn-xs" style={{ marginLeft: 'auto', fontSize: 10 }} onClick={logout}>🚪</button>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span>✅ {whitelist.filter(c => c.enabled).length} canales activos</span>
+              <button className="btn btn-ghost btn-xs" style={{fontSize:10}} onClick={() => navigate('profiles')}>➕ Perfil</button>
+            </div>
+          </div>
+        )}
+      </aside>
+
+      {mobileSidebarOpen && <div onClick={() => setMobileSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }} />}
+
+      <header className={topbarCls}>
+        <button className="dt-icon-btn" onClick={() => { if (window.innerWidth < 768) setMobileSidebarOpen(s => !s); else setSidebarCollapsed(s => !s); }}>☰</button>
+        <div className="dt-search-wrap">
+          <input className="dt-search-input" placeholder={`Buscar en ${config.appName}...`} value={searchInput}
+            onChange={e => setSearchInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') doSearch(); }} />
+          <button className="dt-search-btn" onClick={doSearch}>🔍</button>
+        </div>
+        <div className="dt-topbar-actions">
+          <button className="dt-icon-btn" title="Perfiles" onClick={() => navigate('profiles')}>
+            <ProfileAvatar profile={activeProfile} size={28} />
+          </button>
+          <button className="dt-icon-btn" title="Cerrar sesión" onClick={logout}>🚪</button>
+          <button className="dt-icon-btn" title="Favoritos" onClick={() => navigate('favorites')}>⭐</button>
+          <button className="dt-icon-btn" title="Historial" onClick={() => navigate('history')}>🕐</button>
+          <button className="dt-icon-btn" title="Personalizar" onClick={() => navigate('customize')}>🎨</button>
+          <button className="dt-icon-btn" title="Conexión YouTube" onClick={() => navigate('api')}>
+            🔑<span style={{ position: 'absolute', top: 8, right: 8, width: 6, height: 6, borderRadius: '50%', background: apiKeyStore.get() ? 'var(--dt-success)' : 'var(--dt-text3)' }} />
+          </button>
+        </div>
+      </header>
+
+      <main className={mainCls}>
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'search' && <SearchPage query={searchQuery} />}
+        {currentPage === 'channels' && <ChannelsPage />}
+        {currentPage === 'shorts' && <ShortsPage />}
+        {currentPage === 'favorites' && <FavoritesPage />}
+        {currentPage === 'history' && <HistoryPage />}
+        {currentPage === 'api' && <ApiPage />}
+        {currentPage === 'customize' && <CustomizePage />}
+        {currentPage === 'profiles' && <ProfileSettingsPage />}
+        {currentPage === 'admin' && <AdminPage />}
+      </main>
+
+      <ToastContainer toasts={toasts} removeToast={id => setToasts(t => t.filter(x => x.id !== id))} />
+    </AppContext.Provider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
