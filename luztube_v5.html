@@ -1584,17 +1584,23 @@ function PlayerModal({ video, onClose, onNext, onHistory }) {
   const ctx = useContext(AppContext);
   const videoId = getVideoId(video)||video?.id;
   const isDemo = String(videoId).startsWith('demo_');
+  const [expanded, setExpanded] = useState(false);
+  const [maximized, setMaximized] = useState(false);
   useEffect(()=>{ if(video) onHistory&&onHistory(video); },[video]);
   useEffect(()=>{
     const h=e=>{if(e.key==='Escape')onClose();};
     window.addEventListener('keydown',h);
     return()=>window.removeEventListener('keydown',h);
   },[]);
+  const desc = video?.snippet?.description || '';
+  const descShort = desc.slice(0,280);
+  const descLong = desc;
   return (
     <div className="dt-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div className="dt-modal" style={{maxWidth:920}}>
+      <div className="dt-modal" style={{maxWidth: maximized ? '98vw' : 920, transition:'max-width 0.25s'}}>
         <div className="dt-modal-header">
           <button className="btn btn-ghost btn-icon" onClick={onClose} style={{fontSize:22,padding:6}}>✕</button>
+          <button className="btn btn-ghost btn-sm" onClick={e=>{e.stopPropagation();setMaximized(m=>!m);}} style={{fontSize:13,padding:'4px 8px',marginRight:4}} title={maximized?'Restaurar':'Maximizar'}>{maximized?'🗗':'🗖'}</button>
           <div style={{flex:1,overflow:'hidden'}}>
             <div style={{fontSize:15,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{video?.snippet?.title}</div>
             <div style={{fontSize:12,color:'var(--dt-text3)'}}>{video?.snippet?.channelTitle}</div>
@@ -1615,9 +1621,14 @@ function PlayerModal({ video, onClose, onNext, onHistory }) {
               <YoutubePlayer videoId={videoId} title={video?.snippet?.title}/>
             )}
           </div>
-          {video?.snippet?.description&&(
+          {desc&&(
             <div style={{padding:'16px 20px',fontSize:13,color:'var(--dt-text2)',lineHeight:1.6,borderTop:'1px solid var(--dt-border)'}}>
-              {video.snippet.description.slice(0,280)}{video.snippet.description.length>280?'...':''}
+              {expanded ? descLong : descShort}{desc.length>280&&!expanded&&'...'}
+              {desc.length>280&&(
+                <span onClick={()=>setExpanded(!expanded)} style={{color:'var(--dt-primary)',cursor:'pointer',marginLeft:4,fontWeight:600,userSelect:'none',whiteSpace:'nowrap'}}>
+                  {expanded ? ' Ver menos' : ' Ver más'}
+                </span>
+              )}
             </div>
           )}
         </div>
