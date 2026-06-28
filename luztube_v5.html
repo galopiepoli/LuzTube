@@ -1503,21 +1503,71 @@ function VideoCard({ video, onClick, isFavorite, onToggleFavorite }) {
 }
 
 // ═══════════════════════════════════════════════
-// YOUTUBE PLAYER
+// YOUTUBE PLAYER — controles personalizados sin enlaces a YouTube
 // ═══════════════════════════════════════════════
 function YoutubePlayer({ videoId, title }) {
-  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&playsinline=1`;
+  const playerRef = useRef(null);
+  const containerRef = useRef(null);
+  const progressRef = useRef(null);
+  const [ready, setReady] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [t, setT] = useState(0);
+  const [d, setD] = useState(0);
+  const [vol, setVol] = useState(() => { try { return parseInt(localStorage.getItem('lt_vol')) || 100; } catch { return 100; } });
+  const [muted, setMuted] = useState(false);
+  const [showUI, setShowUI] = useState(true);
+  const hideTimer = useRef(null);
+
+  useEffect(() => {
+    let player = null, interval = null;
+    const init = () => {
+      if (!containerRef.current || !window.YT?.Player) return;
+      player = new YT.Player(containerRef.current, {
+        width: '100%', height: '100%', videoId,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3, fs: 0, cc_load_policy: 0, origin: window.location.origin },
+        events: {
+          onReady: () => { playerRef.current = player; setReady(true); setD(player.getDuration()); player.setVolume(vol); },
+          onStateChange: (e) => { setPlaying(e.data === YT.PlayerState.PLAYING); },
+        },
+      });
+      interval = setInterval(() => { if (player?.getCurrentTime) setT(player.getCurrentTime()); }, 250);
+    };
+    if (window.YT?.Player) { init(); } else {
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); init(); };
+      if (!window.YT) { const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); }
+    }
+    return () => { clearInterval(interval); if (player?.destroy) player.destroy(); };
+  }, [videoId]);
+
+  const fmt = (s) => { if (!s || isNaN(s)) return '0:00'; const m = Math.floor(s / 60); const x = Math.floor(s % 60); return `${m}:${x.toString().padStart(2, '0')}`; };
+
+  const showTemp = () => { setShowUI(true); clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setShowUI(false), 3000); };
+
+  const p = playerRef.current;
 
   return (
-    <div style={{position:'relative',width:'100%',aspectRatio:'16/9',background:'#000',borderRadius:8,overflow:'hidden'}}>
-      <iframe
-        src={embedUrl}
-        title={title||'Video'}
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-        allowFullScreen
-        style={{width:'100%',height:'100%',border:'none',display:'block'}}
-        referrerPolicy="strict-origin-when-cross-origin"
-      />
+    <div style={{position:'relative',width:'100%',aspectRatio:'16/9',background:'#000',borderRadius:8,overflow:'hidden'}}
+      onMouseMove={showTemp} onMouseEnter={() => { clearTimeout(hideTimer.current); setShowUI(true); }}
+      onMouseLeave={() => setShowUI(false)}>
+      <div ref={containerRef} style={{width:'100%',height:'100%',pointerEvents:'none'}} />
+      {showUI && ready && <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,0.85))',padding:'6px 10px',zIndex:20,userSelect:'none'}}>
+        <div ref={progressRef} onClick={e => { if (p) { const r = progressRef.current.getBoundingClientRect(); p.seekTo(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)) * d, true); } }} style={{width:'100%',height:4,background:'rgba(255,255,255,0.2)',borderRadius:2,marginBottom:6,cursor:'pointer'}}>
+          <div style={{width:`${d ? (t/d)*100 : 0}%`,height:'100%',background:'var(--dt-primary)',borderRadius:2}} />
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) playing ? p.pauseVideo() : p.playVideo();}} style={{background:'none',border:'none',color:'#fff',fontSize:18,cursor:'pointer',padding:0,width:28,height:28,display:'flex',alignItems:'center',justifyContent:'center'}}>{playing ? '⏸' : '▶'}</button>
+          <span style={{fontSize:11,color:'rgba(255,255,255,0.7)',fontVariantNumeric:'tabular-nums',whiteSpace:'nowrap',minWidth:70}}>{fmt(t)} / {fmt(d)}</span>
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) muted ? (p.unMute(), setMuted(false)) : (p.mute(), setMuted(true));}} style={{background:'none',border:'none',color:'#fff',fontSize:13,cursor:'pointer',padding:0}}>
+            {muted||vol===0 ? '🔇' : vol < 50 ? '🔉' : '🔊'}
+          </button>
+          <input type="range" min={0} max={100} value={muted ? 0 : vol} onMouseDown={e=>e.stopPropagation()} onChange={e=>{const v=parseInt(e.target.value); setVol(v); if(p) p.setVolume(v); try{localStorage.setItem('lt_vol',v)}catch{} if(v>0&&muted){setMuted(false);if(p)p.unMute();}}} style={{width:60,height:3,cursor:'pointer',accentColor:'var(--dt-primary)'}} />
+          <div style={{flex:1}} />
+          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); const w=containerRef.current?.closest('.player-wrap')||containerRef.current?.parentElement; if(w) document.fullscreenElement ? document.exitFullscreen() : w.requestFullscreen();}} style={{background:'none',border:'none',color:'#fff',fontSize:14,cursor:'pointer',padding:0}}>⛶</button>
+        </div>
+      </div>}
+      {!playing && ready && <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',fontSize:40,color:'rgba(255,255,255,0.7)',pointerEvents:'none',zIndex:5,textShadow:'0 2px 12px rgba(0,0,0,0.6)'}}>▶</div>}
     </div>
   );
 }
