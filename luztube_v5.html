@@ -1503,78 +1503,21 @@ function VideoCard({ video, onClick, isFavorite, onToggleFavorite }) {
 }
 
 // ═══════════════════════════════════════════════
-// YOUTUBE PLAYER — controles personalizados sin enlaces a YouTube
+// YOUTUBE PLAYER
 // ═══════════════════════════════════════════════
-function YoutubePlayer({ videoId, title, fsRef }) {
-  const playerRef = useRef(null);
-  const containerRef = useRef(null);
-  const progressRef = useRef(null);
-  const [ready, setReady] = useState(false);
-  const [playing, setPlaying] = useState(false);
-  const [t, setT] = useState(0);
-  const [d, setD] = useState(0);
-  const [vol, setVol] = useState(() => { try { return parseInt(localStorage.getItem('lt_vol')) || 100; } catch { return 100; } });
-  const [muted, setMuted] = useState(false);
-  const [showUI, setShowUI] = useState(true);
-  const hideTimer = useRef(null);
-
-  useEffect(() => {
-    let player = null, interval = null;
-    const init = () => {
-      if (!containerRef.current || !window.YT?.Player) return;
-      player = new YT.Player(containerRef.current, {
-        width: '100%', height: '100%', videoId,
-        host: 'https://www.youtube-nocookie.com',
-        playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3, fs: 0, cc_load_policy: 0, origin: window.location.origin },
-        events: {
-          onReady: () => { playerRef.current = player; setReady(true); setD(player.getDuration()); player.setVolume(vol); },
-          onStateChange: (e) => { setPlaying(e.data === YT.PlayerState.PLAYING); },
-        },
-      });
-      interval = setInterval(() => { if (player?.getCurrentTime) setT(player.getCurrentTime()); }, 250);
-    };
-    if (window.YT?.Player) { init(); } else {
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); init(); };
-      if (!window.YT) { const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s); }
-    }
-    return () => { clearInterval(interval); if (player?.destroy) player.destroy(); };
-  }, [videoId]);
-
-  const fmt = (s) => { if (!s || isNaN(s)) return '0:00'; const m = Math.floor(s / 60); const x = Math.floor(s % 60); return `${m}:${x.toString().padStart(2, '0')}`; };
-
-  const showTemp = () => { setShowUI(true); clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setShowUI(false), 3000); };
-
-  const p = playerRef.current;
+function YoutubePlayer({ videoId, title }) {
+  const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&fs=1&playsinline=1`;
 
   return (
-    <div ref={fsRef} style={{position:'relative',width:'100%',aspectRatio:'16/9',background:'#000',borderRadius:8,overflow:'hidden'}}
-      onMouseMove={showTemp} onMouseEnter={() => { clearTimeout(hideTimer.current); setShowUI(true); }}
-      onMouseLeave={() => setShowUI(false)}>
-      <div ref={containerRef} style={{width:'100%',height:'100%',pointerEvents:'none'}} />
-      {showUI && ready && <div style={{position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(transparent,rgba(0,0,0,0.85))',padding:'6px 10px',zIndex:20,userSelect:'none'}}>
-        <div ref={progressRef} onClick={e => { if (p) { const r = progressRef.current.getBoundingClientRect(); p.seekTo(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)) * d, true); } }} style={{width:'100%',height:6,background:'rgba(255,255,255,0.15)',borderRadius:3,marginBottom:5,cursor:'pointer',position:'relative',transition:'height 0.15s'}}
-          onMouseEnter={e=>e.currentTarget.style.height='8px'} onMouseLeave={e=>e.currentTarget.style.height='6px'}>
-          <div style={{width:`${d ? (t/d)*100 : 0}%`,height:'100%',background:'var(--dt-primary)',borderRadius:3,position:'relative',transition:'width 0.1s'}}>
-            <div style={{position:'absolute',right:-5,top:'50%',transform:'translateY(-50%)',width:10,height:10,borderRadius:'50%',background:'var(--dt-primary)',boxShadow:'0 0 4px rgba(0,0,0,0.5)'}} />
-          </div>
-        </div>
-        <div style={{display:'flex',alignItems:'center',gap:6}}>
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) playing ? p.pauseVideo() : p.playVideo();}} style={{background:'none',border:'none',color:'#fff',fontSize:20,cursor:'pointer',padding:0,width:30,height:30,display:'flex',alignItems:'center',justifyContent:'center'}}>{playing ? '⏸' : '▶'}</button>
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) p.seekTo(Math.max(0, t - 10), true);}} style={{background:'none',border:'none',color:'rgba(255,255,255,0.8)',fontSize:14,cursor:'pointer',padding:0,width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',opacity:0.7}} title="-10s">⏪</button>
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) p.seekTo(Math.min(d, t + 10), true);}} style={{background:'none',border:'none',color:'rgba(255,255,255,0.8)',fontSize:14,cursor:'pointer',padding:0,width:26,height:26,display:'flex',alignItems:'center',justifyContent:'center',opacity:0.7}} title="+10s">⏩</button>
-          <span style={{fontSize:11,color:'rgba(255,255,255,0.7)',fontVariantNumeric:'tabular-nums',whiteSpace:'nowrap',minWidth:72}}>{fmt(t)} / {fmt(d)}</span>
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); if(p) muted ? (p.unMute(), setMuted(false)) : (p.mute(), setMuted(true));}} style={{background:'none',border:'none',color:'#fff',fontSize:13,cursor:'pointer',padding:0}}>
-            {muted||vol===0 ? '🔇' : vol < 50 ? '🔉' : '🔊'}
-          </button>
-          <input type="range" min={0} max={100} value={muted ? 0 : vol} onMouseDown={e=>e.stopPropagation()} onChange={e=>{const v=parseInt(e.target.value); setVol(v); if(p) p.setVolume(v); try{localStorage.setItem('lt_vol',v)}catch{} if(v>0&&muted){setMuted(false);if(p)p.unMute();}}} style={{width:60,height:3,cursor:'pointer',accentColor:'var(--dt-primary)'}} />
-          <div style={{flex:1}} />
-          <button onMouseDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation(); const w=fsRef?.current||containerRef.current?.parentElement; if(w) document.fullscreenElement ? document.exitFullscreen() : w.requestFullscreen();}} style={{background:'none',border:'none',color:'#fff',cursor:'pointer',padding:0,width:24,height:24,display:'flex',alignItems:'center',justifyContent:'center',opacity:0.8}} title="Pantalla completa">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-          </button>
-        </div>
-      </div>}
-      {!playing && ready && <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',fontSize:40,color:'rgba(255,255,255,0.7)',pointerEvents:'none',zIndex:5,textShadow:'0 2px 12px rgba(0,0,0,0.6)'}}>▶</div>}
+    <div style={{position:'relative',width:'100%',aspectRatio:'16/9',background:'#000',borderRadius:8,overflow:'hidden'}}>
+      <iframe
+        src={embedUrl}
+        title={title||'Video'}
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        allowFullScreen
+        style={{width:'100%',height:'100%',border:'none',display:'block'}}
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
     </div>
   );
 }
@@ -1586,24 +1529,18 @@ function PlayerModal({ video, onClose, onNext, onHistory }) {
   const ctx = useContext(AppContext);
   const videoId = getVideoId(video)||video?.id;
   const isDemo = String(videoId).startsWith('demo_');
-  const [expanded, setExpanded] = useState(false);
-  const [maximized, setMaximized] = useState(false);
-  const fsRef = useRef(null);
+  const [showFullDesc, setShowFullDesc] = useState(false);
   useEffect(()=>{ if(video) onHistory&&onHistory(video); },[video]);
   useEffect(()=>{
     const h=e=>{if(e.key==='Escape')onClose();};
     window.addEventListener('keydown',h);
     return()=>window.removeEventListener('keydown',h);
   },[]);
-  const desc = video?.snippet?.description || '';
-  const descShort = desc.slice(0,280);
-  const descLong = desc;
   return (
     <div className="dt-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
-      <div className="dt-modal" style={{maxWidth: maximized ? '98vw' : 920, transition:'max-width 0.25s'}}>
+      <div className="dt-modal" style={{maxWidth:920}}>
         <div className="dt-modal-header">
           <button className="btn btn-ghost btn-icon" onClick={onClose} style={{fontSize:22,padding:6}}>✕</button>
-          <button className="btn btn-ghost btn-sm" onClick={e=>{e.stopPropagation();setMaximized(m=>!m);}} style={{fontSize:13,padding:'4px 8px',marginRight:4}} title={maximized?'Restaurar':'Maximizar'}>{maximized?'🗗':'🗖'}</button>
           <div style={{flex:1,overflow:'hidden'}}>
             <div style={{fontSize:15,fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{video?.snippet?.title}</div>
             <div style={{fontSize:12,color:'var(--dt-text3)'}}>{video?.snippet?.channelTitle}</div>
@@ -1621,19 +1558,18 @@ function PlayerModal({ video, onClose, onNext, onHistory }) {
                 </div>
               </div>
             ):(
-              <YoutubePlayer videoId={videoId} title={video?.snippet?.title} fsRef={fsRef}/>
+              <YoutubePlayer videoId={videoId} title={video?.snippet?.title}/>
             )}
           </div>
-          {desc&&(
-            <div style={{padding:'16px 20px',fontSize:13,color:'var(--dt-text2)',lineHeight:1.6,borderTop:'1px solid var(--dt-border)'}}>
-              {expanded ? descLong : descShort}{desc.length>280&&!expanded&&'...'}
-              {desc.length>280&&(
-                <span onClick={()=>setExpanded(!expanded)} style={{color:'var(--dt-primary)',cursor:'pointer',marginLeft:4,fontWeight:600,userSelect:'none',whiteSpace:'nowrap'}}>
-                  {expanded ? ' Ver menos' : ' Ver más'}
-                </span>
-              )}
-            </div>
-          )}
+          {video?.snippet?.description&&(()=>{
+            const full = video.snippet.description;
+            const short = full.slice(0,280);
+            const isLong = full.length>280;
+            return <div style={{padding:'16px 20px',fontSize:13,color:'var(--dt-text2)',lineHeight:1.6,borderTop:'1px solid var(--dt-border)'}}>
+              {showFullDesc?full:short}{isLong&&!showFullDesc?'...':''}
+              {isLong&&<span onClick={()=>setShowFullDesc(!showFullDesc)} style={{color:'var(--dt-primary)',cursor:'pointer',marginLeft:4,userSelect:'none',whiteSpace:'nowrap'}}>{showFullDesc?'▴ Ver menos':'▾ Ver más'}</span>}
+            </div>;
+          })()}
         </div>
       </div>
     </div>
