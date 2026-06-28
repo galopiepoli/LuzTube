@@ -21,8 +21,34 @@ for cmd in python3 python; do
 done
 
 if [ -z "$PYTHON" ]; then
-  echo "  ❌ Python no encontrado. Instalalo con: brew install python"
-  exit 1
+  echo "  ⚠  Python no está instalado."
+  if command -v brew &>/dev/null; then
+    echo "     Homebrew detectado. Instalando Python..."
+    brew install python
+    for cmd in python3 python; do
+      if command -v "$cmd" &>/dev/null; then
+        PYTHON="$cmd"
+        break
+      fi
+    done
+  fi
+  if [ -z "$PYTHON" ]; then
+    echo "  ❌ No se pudo instalar automáticamente."
+    echo "     Descargalo desde: https://www.python.org/downloads/"
+    echo "     (marcá 'Add Python to PATH' al instalarlo)"
+    echo ""
+    read -p "     Presioná Enter después de instalar Python..."
+    for cmd in python3 python; do
+      if command -v "$cmd" &>/dev/null; then
+        PYTHON="$cmd"
+        break
+      fi
+    done
+    if [ -z "$PYTHON" ]; then
+      echo "  ❌ Python sigue sin encontrarse. Saliendo."
+      exit 1
+    fi
+  fi
 fi
 
 echo "  ✓ Usando: $($PYTHON --version 2>&1)"
