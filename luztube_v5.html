@@ -3454,8 +3454,8 @@ function App() {
   }, []);
 
   // Persist whitelist & config
-  const setWhitelist = useCallback(v => { setWhitelistRaw(v); storage.set('lt_whitelist', v); serverStorage.save('lt_whitelist', v); }, []);
-  const setConfig = useCallback(v => { setConfigRaw(v); storage.set('lt_config', v); serverStorage.save('lt_config', v); }, []);
+  const setWhitelist = useCallback(v => { setWhitelistRaw(prev => { const next = typeof v === 'function' ? v(prev) : v; storage.set('lt_whitelist', next); serverStorage.save('lt_whitelist', next); return next; }); }, []);
+  const setConfig = useCallback(v => { setConfigRaw(prev => { const next = typeof v === 'function' ? v(prev) : v; storage.set('lt_config', next); serverStorage.save('lt_config', next); return next; }); }, []);
 
   const showToast = useCallback((message, type = 'info') => {
     const id = Date.now();
@@ -3542,7 +3542,7 @@ function App() {
   useEffect(() => {
     if (!activeProfile) return;
     const mergedConfig = profileManager.getMergedConfig(activeProfile.id);
-    const c = { ...config, ...mergedConfig };
+    const c = { ...config, ...mergedConfig, primaryColor: activeProfile.color || mergedConfig.primaryColor, theme: activeProfile.theme || mergedConfig.theme };
     const r = document.documentElement;
     if (c.primaryColor) r.style.setProperty('--dt-primary', c.primaryColor);
     if (c.bgColor) r.style.setProperty('--dt-bg', c.bgColor);
